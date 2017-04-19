@@ -1,15 +1,16 @@
 package edu.umd.cmsc436.mstestsuite;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLoadingText;
     private ProgressBar mProgressBar;
     private Toast mToast;
-    private Button mTestButton;
+    private Button mPeekButton;
     private BottomSheetBehavior mBottomSheet;
+    private ImageView mCloseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +36,37 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        mTestButton = (Button) findViewById(R.id.peeked_begin_button);
+        mPeekButton = (Button) findViewById(R.id.peeked_begin_button);
+
+        mCloseButton = (ImageView) findViewById(R.id.close_bottom_sheet_button);
+        mCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPeekButton.setVisibility(View.VISIBLE);
+                mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
 
         mBottomSheet = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
         mBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    mPeekButton.setVisibility(View.GONE);
+                } else if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    mPeekButton.setVisibility(View.VISIBLE);
+                    mCloseButton.setVisibility(View.VISIBLE);
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mCloseButton.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                mTestButton.setAlpha(1-slideOffset);
+                mPeekButton.setAlpha(1-slideOffset);
+                mCloseButton.setAlpha(slideOffset);
             }
         });
-        mBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         mLoadingText = (TextView) findViewById(R.id.loading_textview);
@@ -97,7 +115,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }));
 
+
         hideLoading();
+
+        // TODO choose based on prescription stuff
+        mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mCloseButton.setVisibility(View.GONE);
     }
 
     private void hideLoading () {
