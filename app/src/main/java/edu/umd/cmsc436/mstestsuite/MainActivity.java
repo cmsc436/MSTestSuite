@@ -1,5 +1,6 @@
 package edu.umd.cmsc436.mstestsuite;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLoadingText;
     private ProgressBar mProgressBar;
     private Toast mToast;
+    private Button mTestButton;
+    private BottomSheetBehavior mBottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +34,21 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        BottomSheetBehavior b = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
-        b.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mTestButton = (Button) findViewById(R.id.peeked_begin_button);
+
+        mBottomSheet = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
+        mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                mTestButton.setAlpha(1-slideOffset);
+            }
+        });
 
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         mLoadingText = (TextView) findViewById(R.id.loading_textview);

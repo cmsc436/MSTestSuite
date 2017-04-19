@@ -3,4 +3,5 @@
     <string name="loading_text">Loading prescription</string>
     <string name="content_description_text">Icon for current test</string>
     <string name="recyclerview_header_text">Practice Mode</string>
+    <string name="peeked_begin_text">Daily</string>
 </resources>
