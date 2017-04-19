@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         mTestButton = (Button) findViewById(R.id.peeked_begin_button);
 
         mBottomSheet = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
-        mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
         mBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 mTestButton.setAlpha(1-slideOffset);
             }
         });
+        mBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         mLoadingText = (TextView) findViewById(R.id.loading_textview);
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 int w = mRecyclerView.getWidth();
                 int image_w = (int) getResources().getDimension(R.dimen.practice_icon_size);
-                mLayoutManager.setSpanCount(w/((int) (image_w * 1.5)));
+                mLayoutManager.setSpanCount(w/((int) (image_w * 1.4)));
             }
         });
 

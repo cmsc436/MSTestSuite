@@ -4,4 +4,7 @@
     <string name="content_description_text">Icon for current test</string>
     <string name="recyclerview_header_text">Practice Mode</string>
     <string name="peeked_begin_text">Daily</string>
+    <string name="bottom_sheet_info_text">Daily tests are available</string>
+    <string name="expanded_daily_button_text">Begin</string>
+    <string name="expanded_practice_button_text">Practice</string>
 </resources>
