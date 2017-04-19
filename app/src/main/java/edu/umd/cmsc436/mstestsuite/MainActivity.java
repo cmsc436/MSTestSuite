@@ -42,8 +42,14 @@ public class MainActivity extends AppCompatActivity {
         mCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPeekButton.setVisibility(View.VISIBLE);
-                mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                collapseBottomSheet();
+            }
+        });
+
+        findViewById(R.id.expanded_practice_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                collapseBottomSheet();
             }
         });
 
@@ -121,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
         // TODO choose based on prescription stuff
         mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
         mCloseButton.setVisibility(View.GONE);
+    }
+
+    private void collapseBottomSheet() {
+        mPeekButton.setVisibility(View.VISIBLE);
+        mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void hideLoading () {
