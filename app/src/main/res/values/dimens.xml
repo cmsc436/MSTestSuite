@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="bottom_sheet_elevation">10dp</dimen>
+    <dimen name="practice_icon_size">120dp</dimen>
+    <dimen name="practice_test_elevation">4dp</dimen>
 </resources>

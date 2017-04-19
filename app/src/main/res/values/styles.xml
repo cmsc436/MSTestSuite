@@ -12,4 +12,10 @@
         <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
+    <style name="SquareLayoutTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@drawable/ripple</item>
+        <item name="android:color">@android:color/white</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+    </style>
+
 </resources>
