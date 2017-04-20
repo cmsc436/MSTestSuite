@@ -61,13 +61,7 @@ public class PracticeModeAdapter extends RecyclerView.Adapter<PracticeModeAdapte
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Intent i = new Intent(mTestApps[holder.getAdapterPosition() - 1].getPackageName());
-                    // TODO test arguments for practice mode, or move to activity through callbacks
-                    holder.root.getContext().startActivity(i);
-                } catch (ActivityNotFoundException anfe) {
-                    mEventCallbacks.toast(mTestApps[holder.getAdapterPosition()-1].getDisplayName() + " not found");
-                }
+                mEventCallbacks.appSelected(mTestApps[holder.getAdapterPosition()-1]);
             }
         });
     }
@@ -93,6 +87,6 @@ public class PracticeModeAdapter extends RecyclerView.Adapter<PracticeModeAdapte
     }
 
     public interface Events {
-        void toast (String message);
+        void appSelected (TestApp app);
     }
 }

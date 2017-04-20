@@ -1,5 +1,8 @@
 package edu.umd.cmsc436.mstestsuite;
 
+import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -16,9 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import edu.umd.cmsc436.mstestsuite.data.PracticeModeAdapter;
-import edu.umd.cmsc436.mstestsuite.data.TestApp;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainContract.View {
 
     private RecyclerView mRecyclerView;
     private GridLayoutManager mLayoutManager;
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private BottomSheetBehavior mBottomSheet;
     private ImageView mCloseButton;
 
+    private MainContract.Presenter mPresenter;
+
+    @SuppressLint("ShowToast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,19 +42,29 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         mPeekButton = (Button) findViewById(R.id.peeked_begin_button);
+        mPeekButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mBottomSheet.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mPresenter.onDailyStart();
+                }
+            }
+        });
 
         mCloseButton = (ImageView) findViewById(R.id.close_bottom_sheet_button);
         mCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                collapseBottomSheet();
+                if (mBottomSheet.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    mPresenter.onCloseBottomSheet();
+                }
             }
         });
 
         findViewById(R.id.expanded_practice_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                collapseBottomSheet();
+                mPresenter.onCloseBottomSheet();
             }
         });
 
@@ -57,20 +72,14 @@ public class MainActivity extends AppCompatActivity {
         mBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    mPeekButton.setVisibility(View.GONE);
-                } else if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    mPeekButton.setVisibility(View.VISIBLE);
-                    mCloseButton.setVisibility(View.VISIBLE);
-                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    mCloseButton.setVisibility(View.GONE);
-                }
+                mPresenter.onBottomSheetStateChange(newState);
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 mPeekButton.setAlpha(1-slideOffset);
                 mCloseButton.setAlpha(slideOffset);
+                mPresenter.onBottomSheetSlide();
             }
         });
 
@@ -88,12 +97,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // TODO get from cache or sheets eventually
-        TestApp[] apps = new TestApp[] {
-                new TestApp("edu.umd.cmsc436.mstestsuite", "Friendly", R.mipmap.ic_launcher),
-                new TestApp("edu.umd.cmsc436.mstestsuite", "Name", R.mipmap.ic_launcher_round)
-        };
-
         mLayoutManager = new GridLayoutManager(this, 2);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -108,34 +111,64 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(new PracticeModeAdapter(apps, new PracticeModeAdapter.Events() {
+
+        mPresenter = new MainPresenter(this);
+    }
+
+    @Override
+    public void expandBottomSheet() {
+        runOnUiThread(new Runnable() {
             @Override
-            public void toast(final String message) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mToast.setText(message);
-                        mToast.show();
-                    }
-                });
+            public void run() {
+                mBottomSheet.setHideable(false);
+                mBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
-        }));
-
-
-        hideLoading();
-
-        // TODO choose based on prescription stuff
-        mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        mCloseButton.setVisibility(View.GONE);
+        });
     }
 
-    private void collapseBottomSheet() {
-        mPeekButton.setVisibility(View.VISIBLE);
-        mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    @Override
+    public void collapseBottomSheet() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mBottomSheet.setHideable(false);
+                mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
     }
 
-    private void hideLoading () {
-        mLoadingText.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.GONE);
+    @Override
+    public void hideBottomSheet() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mBottomSheet.setHideable(true);
+                mBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+        });
+    }
+
+    @Override
+    public void loadTestApps(final PracticeModeAdapter adapter) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mLoadingText.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerView.setAdapter(adapter);
+            }
+        });
+    }
+
+    @Override
+    public void showToast(String message) {
+        mToast.setText(message);
+        mToast.show();
+    }
+
+    @Override
+    public void startActivity(String packageName) throws ActivityNotFoundException {
+        Intent i = new Intent(packageName);
+        startActivity(i);
     }
 }

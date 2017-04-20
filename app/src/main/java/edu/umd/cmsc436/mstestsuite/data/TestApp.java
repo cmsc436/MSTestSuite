@@ -15,11 +15,11 @@ public class TestApp {
         this.iconResource = iconResource;
     }
 
-    String getPackageName() {
+    public String getPackageName() {
         return packageName;
     }
 
-    String getDisplayName() {
+    public String getDisplayName() {
         return displayName;
     }
 
