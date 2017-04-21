@@ -13,10 +13,19 @@ import edu.umd.cmsc436.mstestsuite.data.TestApp;
 class MainPresenter implements MainContract.Presenter {
 
     private MainContract.View mView;
-    private int curBottomState;
     private final TestApp[] apps = new TestApp[]{
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Friendly", R.mipmap.ic_launcher),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Name", R.mipmap.ic_launcher_round)
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 1", R.mipmap.ic_launcher),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 2", R.mipmap.ic_launcher_round),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 3", R.mipmap.ic_launcher),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 4", R.mipmap.ic_launcher_round),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 5", R.mipmap.ic_launcher),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 6", R.mipmap.ic_launcher_round),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 7", R.mipmap.ic_launcher),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 8", R.mipmap.ic_launcher_round),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 9", R.mipmap.ic_launcher),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 10", R.mipmap.ic_launcher_round),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 11", R.mipmap.ic_launcher),
+            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 12", R.mipmap.ic_launcher_round),
     };
 
     MainPresenter(MainContract.View v) {
@@ -55,7 +64,6 @@ class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onBottomSheetStateChange(int newState) {
-        curBottomState = newState;
 
         if (newState == BottomSheetBehavior.STATE_EXPANDED) {
             mView.loadTestApps(new PracticeModeAdapter(apps, new PracticeModeAdapter.Events() {
