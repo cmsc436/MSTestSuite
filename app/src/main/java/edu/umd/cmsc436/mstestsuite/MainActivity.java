@@ -1,5 +1,6 @@
 package edu.umd.cmsc436.mstestsuite;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -147,8 +148,24 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mLayoutManager.setSpanSizeLookup(adapter.getSpanLookup(mLayoutManager));
-                mRecyclerView.setAdapter(adapter);
+                final int duration = getResources().getInteger(android.R.integer.config_longAnimTime);
+                final int translateY = 50;
+                mRecyclerView.animate()
+                        .alpha(0f)
+                        .translationYBy(translateY)
+                        .setDuration(duration)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                mLayoutManager.setSpanSizeLookup(adapter.getSpanLookup(mLayoutManager));
+                                mRecyclerView.setAdapter(adapter);
+                                mRecyclerView.animate()
+                                        .alpha(1.0f)
+                                        .translationYBy(-translateY)
+                                        .setDuration(duration)
+                                        .start();
+                            }
+                        }).start();
             }
         });
     }
