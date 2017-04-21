@@ -14,8 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import edu.umd.cmsc436.mstestsuite.data.PracticeModeAdapter;
@@ -24,8 +22,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     private RecyclerView mRecyclerView;
     private GridLayoutManager mLayoutManager;
-    private TextView mLoadingText;
-    private ProgressBar mProgressBar;
     private Toast mToast;
     private Button mPeekButton;
     private BottomSheetBehavior mBottomSheet;
@@ -84,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         });
 
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
-        mLoadingText = (TextView) findViewById(R.id.loading_textview);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.practice_test_recyclerview);
         mRecyclerView.post(new Runnable() {
@@ -153,8 +147,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mLoadingText.setVisibility(View.GONE);
-                mProgressBar.setVisibility(View.GONE);
                 mRecyclerView.setAdapter(adapter);
             }
         });
