@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import edu.umd.cmsc436.mstestsuite.data.PracticeModeAdapter;
+import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
@@ -143,10 +143,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void loadTestApps(final PracticeModeAdapter adapter) {
+    public void loadTestApps(final ActionsAdapter adapter) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mLayoutManager.setSpanSizeLookup(adapter.getSpanLookup(mLayoutManager));
                 mRecyclerView.setAdapter(adapter);
             }
         });

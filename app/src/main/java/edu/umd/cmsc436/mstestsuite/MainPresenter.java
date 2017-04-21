@@ -1,8 +1,7 @@
 package edu.umd.cmsc436.mstestsuite;
 
-import android.content.ActivityNotFoundException;
-import android.support.design.widget.BottomSheetBehavior;
-
+import edu.umd.cmsc436.mstestsuite.data.Action;
+import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.data.PracticeModeAdapter;
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
 
@@ -28,23 +27,29 @@ class MainPresenter implements MainContract.Presenter {
             new TestApp("edu.umd.cmsc436.mstestsuite", "Test 12", R.mipmap.ic_launcher_round),
     };
 
+    private final Action[] actions = new Action[] {
+            new Action("Practice", R.mipmap.ic_launcher, new Runnable() {
+                @Override
+                public void run() {
+                    mView.loadTestApps(new PracticeModeAdapter(apps, new PracticeModeAdapter.Events() {
+                        @Override
+                        public void appSelected(TestApp app) {
+                            mView.showToast(app.getDisplayName());
+                        }
+                    }));
+                }
+            }),
+            new Action("Switch User", R.mipmap.ic_launcher_round, null),
+            new Action("Help", R.mipmap.ic_launcher, null),
+            new Action("History", R.mipmap.ic_launcher_round, null),
+            new Action("Feedback", R.mipmap.ic_launcher, null),
+    };
+
     MainPresenter(MainContract.View v) {
         mView = v;
         mView.hideBottomSheet();
 
-        // pretend loading
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    // whatever
-                }
-
-                mView.expandBottomSheet();
-            }
-        }).start();
+        mView.loadTestApps(new ActionsAdapter(actions));
     }
 
     @Override
@@ -64,18 +69,6 @@ class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onBottomSheetStateChange(int newState) {
-
-        if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-            mView.loadTestApps(new PracticeModeAdapter(apps, new PracticeModeAdapter.Events() {
-                @Override
-                public void appSelected(TestApp app) {
-                    try {
-                        mView.startActivity(app.getPackageName());
-                    } catch (ActivityNotFoundException anfe) {
-                        mView.showToast(app.getDisplayName() + " not found");
-                    }
-                }
-            }));
-        }
+        // nothing
     }
 }
