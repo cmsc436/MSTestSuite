@@ -31,6 +31,7 @@ class MainPresenter implements MainContract.Presenter {
             new Action("Practice", R.mipmap.ic_launcher, new Runnable() {
                 @Override
                 public void run() {
+                    isPractice = true;
                     mView.loadTestApps(new PracticeModeAdapter(apps, new PracticeModeAdapter.Events() {
                         @Override
                         public void appSelected(TestApp app) {
@@ -45,10 +46,13 @@ class MainPresenter implements MainContract.Presenter {
             new Action("Feedback", R.mipmap.ic_launcher, null),
     };
 
+    private boolean isPractice;
+
     MainPresenter(MainContract.View v) {
         mView = v;
         mView.hideBottomSheet();
 
+        isPractice = false;
         mView.loadTestApps(new ActionsAdapter(actions));
     }
 
@@ -70,5 +74,17 @@ class MainPresenter implements MainContract.Presenter {
     @Override
     public void onBottomSheetStateChange(int newState) {
         // nothing
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (isPractice) {
+            // should really reuse these
+            isPractice = false;
+            mView.loadTestApps(new ActionsAdapter(actions));
+            return false;
+        } else {
+            return true;
+        }
     }
 }

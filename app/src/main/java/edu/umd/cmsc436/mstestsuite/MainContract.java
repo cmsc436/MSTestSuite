@@ -26,5 +26,6 @@ interface MainContract {
         void onCloseBottomSheet ();
         void onBottomSheetSlide ();
         void onBottomSheetStateChange (int newState);
+        boolean onBackPressed ();
     }
 }

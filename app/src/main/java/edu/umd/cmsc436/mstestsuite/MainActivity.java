@@ -181,4 +181,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         Intent i = new Intent(packageName);
         startActivity(i);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (mPresenter.onBackPressed()) {
+            super.onBackPressed();
+        }
+    }
 }
