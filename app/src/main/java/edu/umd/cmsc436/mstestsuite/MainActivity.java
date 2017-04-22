@@ -1,6 +1,5 @@
 package edu.umd.cmsc436.mstestsuite;
 
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
