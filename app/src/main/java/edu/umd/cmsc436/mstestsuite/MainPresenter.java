@@ -1,9 +1,15 @@
 package edu.umd.cmsc436.mstestsuite;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+
 import edu.umd.cmsc436.mstestsuite.data.Action;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.data.PracticeModeAdapter;
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
+import edu.umd.cmsc436.mstestsuite.model.PharmacistService;
 
 /**
  * Do the logic of things without worrying about the view
@@ -11,7 +17,6 @@ import edu.umd.cmsc436.mstestsuite.data.TestApp;
 
 class MainPresenter implements MainContract.Presenter {
 
-    private MainContract.View mView;
     private final TestApp[] apps = new TestApp[]{
             new TestApp("edu.umd.cmsc436.mstestsuite", "Test 1", R.mipmap.ic_launcher),
             new TestApp("edu.umd.cmsc436.mstestsuite", "Test 2", R.mipmap.ic_launcher_round),
@@ -26,7 +31,6 @@ class MainPresenter implements MainContract.Presenter {
             new TestApp("edu.umd.cmsc436.mstestsuite", "Test 11", R.mipmap.ic_launcher),
             new TestApp("edu.umd.cmsc436.mstestsuite", "Test 12", R.mipmap.ic_launcher_round),
     };
-
     private final Action[] actions = new Action[] {
             new Action("Practice", R.mipmap.ic_launcher, new Runnable() {
                 @Override
@@ -46,6 +50,8 @@ class MainPresenter implements MainContract.Presenter {
             new Action("Feedback", R.mipmap.ic_launcher, null),
     };
 
+    private MainContract.View mView;
+
     private boolean isPractice;
 
     MainPresenter(MainContract.View v) {
@@ -54,6 +60,13 @@ class MainPresenter implements MainContract.Presenter {
 
         isPractice = false;
         mView.loadTestApps(new ActionsAdapter(actions));
+
+        LocalBroadcastManager.getInstance(mView.getContext()).registerReceiver(mLocalReceiver,
+                PharmacistService.ON_FINISH_FILTER);
+
+        Intent i = new Intent(mView.getContext(), PharmacistService.class);
+        i.putExtra(PharmacistService.KEY_PATIENT_ID, "patient"); // TODO "patent"
+        mView.getContext().startService(i);
     }
 
     @Override
@@ -87,4 +100,16 @@ class MainPresenter implements MainContract.Presenter {
             return true;
         }
     }
+
+    @Override
+    public void onDestroy() {
+        LocalBroadcastManager.getInstance(mView.getContext()).unregisterReceiver(mLocalReceiver);
+    }
+
+    private BroadcastReceiver mLocalReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mView.showToast("done");
+        }
+    };
 }

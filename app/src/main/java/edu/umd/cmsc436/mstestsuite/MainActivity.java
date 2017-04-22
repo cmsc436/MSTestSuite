@@ -2,6 +2,7 @@ package edu.umd.cmsc436.mstestsuite;
 
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -110,6 +111,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
+    }
+
+    @Override
     public void expandBottomSheet() {
         runOnUiThread(new Runnable() {
             @Override
@@ -179,6 +186,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void startActivity(String packageName) throws ActivityNotFoundException {
         Intent i = new Intent(packageName);
         startActivity(i);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 
     @Override

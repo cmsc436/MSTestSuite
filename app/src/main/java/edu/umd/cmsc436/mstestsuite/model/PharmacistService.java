@@ -2,11 +2,10 @@ package edu.umd.cmsc436.mstestsuite.model;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.os.Binder;
-import android.os.IBinder;
+import android.content.IntentFilter;
 import android.support.annotation.Nullable;
-
-import java.util.HashMap;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 /**
  * Because it gets prescriptions
@@ -14,10 +13,14 @@ import java.util.HashMap;
 
 public class PharmacistService extends IntentService {
 
-    public static final String KEY_PATIENT_ID = "patient id";
+    private static final String FINISH_INTENT_MESSAGE = "finished";
 
-    private PharmacistBinder mBinder = new PharmacistBinder();
-    private HashMap<String, Runnable> finishListeners = new HashMap<>();
+    public static final String KEY_PATIENT_ID = "patient id";
+    public static final IntentFilter ON_FINISH_FILTER = new IntentFilter(FINISH_INTENT_MESSAGE);
+
+    public PharmacistService () {
+        super("pharmacist");
+    }
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -30,9 +33,11 @@ public class PharmacistService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        Log.i("TAG", "start");
         if (intent == null) {
             return;
         }
+        Log.i("TAG", "have an intent");
 
         String patient_id = intent.getStringExtra(KEY_PATIENT_ID);
 
@@ -43,25 +48,7 @@ public class PharmacistService extends IntentService {
             // nothing
         }
 
-        Runnable finishListener = finishListeners.get(patient_id);
-        if (finishListener != null) {
-            finishListener.run();
-        }
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    public void addRunnable(String patient_id, Runnable onFinishListener) {
-        finishListeners.put(patient_id, onFinishListener);
-    }
-
-    class PharmacistBinder extends Binder {
-        PharmacistService getService () {
-            return PharmacistService.this;
-        }
+        Intent i = new Intent(FINISH_INTENT_MESSAGE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
     }
 }

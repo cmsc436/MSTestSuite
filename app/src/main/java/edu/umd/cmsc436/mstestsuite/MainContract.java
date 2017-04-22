@@ -1,6 +1,7 @@
 package edu.umd.cmsc436.mstestsuite;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 
@@ -18,6 +19,7 @@ interface MainContract {
         void loadTestApps (ActionsAdapter adapter);
         void showToast (String message);
         void startActivity (String packageName) throws ActivityNotFoundException;
+        Context getContext ();
     }
 
     // things the presenter responds to
@@ -27,5 +29,6 @@ interface MainContract {
         void onBottomSheetSlide ();
         void onBottomSheetStateChange (int newState);
         boolean onBackPressed ();
+        void onDestroy ();
     }
 }
