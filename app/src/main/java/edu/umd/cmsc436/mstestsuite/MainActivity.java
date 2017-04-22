@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -199,9 +200,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void showUserSwitcher(final String[] users) {
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.user_switcher);
-        ListView lv = (ListView) dialog.findViewById(R.id.users_listview);
+        final Dialog dialog = new AppCompatDialog(this);
+
+        @SuppressLint("InflateParams") // it's fine I swear
+        View root = dialog.getLayoutInflater().inflate(R.layout.user_switcher, null, false);
+        ListView lv = (ListView) root.findViewById(R.id.users_listview);
 
         lv.setAdapter(new ArrayAdapter<>(this, R.layout.user_switcher_item, R.id.listview_item_textview, users));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -211,6 +214,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 mPresenter.onUserSelected(users[position]);
             }
         });
+
+        dialog.setContentView(root);
         dialog.show();
     }
 

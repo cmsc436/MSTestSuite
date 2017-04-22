@@ -7,4 +7,6 @@
     <string name="bottom_sheet_info_text">Daily tests are available</string>
     <string name="expanded_daily_button_text">Begin</string>
     <string name="expanded_practice_button_text">Practice</string>
+    <string name="new_patient_id_hint_text">New patient ID</string>
+    <string name="create_user_button_text">Create</string>
 </resources>

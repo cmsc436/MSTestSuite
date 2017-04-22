@@ -24,5 +24,9 @@
         <item name="android:textAlignment">center</item>
         <item name="android:drawableRight">@drawable/ic_arrow_forward_black_24dp</item>
     </style>
+    
+    <style name="CreateUserButtonTheme" parent="DailyButtonTheme">
+        <item name="android:drawableRight">@null</item>
+    </style>
 
 </resources>
