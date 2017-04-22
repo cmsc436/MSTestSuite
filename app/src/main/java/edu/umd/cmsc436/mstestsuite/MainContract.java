@@ -20,6 +20,7 @@ interface MainContract {
         void showToast (String message);
         void startActivity (String packageName) throws ActivityNotFoundException;
         Context getContext ();
+        void showUserSwitcher (String[] users);
     }
 
     // things the presenter responds to
@@ -30,5 +31,6 @@ interface MainContract {
         void onBottomSheetStateChange (int newState);
         boolean onBackPressed ();
         void onDestroy ();
+        void onUserSelected (String patient_id);
     }
 }

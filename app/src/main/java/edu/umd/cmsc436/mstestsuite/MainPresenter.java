@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import edu.umd.cmsc436.mstestsuite.data.Action;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.data.PracticeModeAdapter;
@@ -16,6 +19,10 @@ import edu.umd.cmsc436.mstestsuite.model.PharmacistService;
  */
 
 class MainPresenter implements MainContract.Presenter {
+
+    private static final String GLOBAL_PREFS_NAME = "GLOBAL";
+    private static final String KEY_CUR_USER = "cur user";
+    private static final String KEY_ALL_USERS = "all users";
 
     private final TestApp[] apps = new TestApp[]{
             new TestApp("edu.umd.cmsc436.mstestsuite", "Test 1", R.mipmap.ic_launcher),
@@ -44,7 +51,18 @@ class MainPresenter implements MainContract.Presenter {
                     }));
                 }
             }),
-            new Action("Switch User", R.mipmap.ic_launcher_round, null),
+            new Action("Switch User", R.mipmap.ic_launcher_round, new Runnable() {
+                @Override
+                public void run() {
+                    HashSet<String> defaultSet = new HashSet<>();
+                    defaultSet.add(mCurUser);
+                    defaultSet.add("TEMP 1");
+                    defaultSet.add("TEMP 2");
+                    Set<String> users = mView.getContext().getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE)
+                            .getStringSet(KEY_ALL_USERS, defaultSet);
+                    mView.showUserSwitcher(users.toArray(new String[users.size()]));
+                }
+            }),
             new Action("Help", R.mipmap.ic_launcher, null),
             new Action("History", R.mipmap.ic_launcher_round, null),
             new Action("Feedback", R.mipmap.ic_launcher, null),
@@ -53,6 +71,7 @@ class MainPresenter implements MainContract.Presenter {
     private MainContract.View mView;
 
     private boolean isPractice;
+    private String mCurUser;
 
     MainPresenter(MainContract.View v) {
         mView = v;
@@ -64,8 +83,9 @@ class MainPresenter implements MainContract.Presenter {
         LocalBroadcastManager.getInstance(mView.getContext()).registerReceiver(mLocalReceiver,
                 PharmacistService.ON_FINISH_FILTER);
 
+        mCurUser = mView.getContext().getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE).getString(KEY_CUR_USER, "patient");
         Intent i = new Intent(mView.getContext(), PharmacistService.class);
-        i.putExtra(PharmacistService.KEY_PATIENT_ID, "patient"); // TODO "patent"
+        i.putExtra(PharmacistService.KEY_PATIENT_ID, mCurUser);
         mView.getContext().startService(i);
     }
 
@@ -104,6 +124,14 @@ class MainPresenter implements MainContract.Presenter {
     @Override
     public void onDestroy() {
         LocalBroadcastManager.getInstance(mView.getContext()).unregisterReceiver(mLocalReceiver);
+    }
+
+    @Override
+    public void onUserSelected(String patient_id) {
+        mCurUser = patient_id;
+        mView.getContext().getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE).edit()
+                .putString(KEY_CUR_USER, mCurUser)
+                .apply();
     }
 
     private BroadcastReceiver mLocalReceiver = new BroadcastReceiver() {

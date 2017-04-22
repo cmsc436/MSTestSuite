@@ -1,6 +1,7 @@
 package edu.umd.cmsc436.mstestsuite;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +14,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
@@ -191,6 +195,23 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void showUserSwitcher(final String[] users) {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.user_switcher);
+        ListView lv = (ListView) dialog.findViewById(R.id.users_listview);
+
+        lv.setAdapter(new ArrayAdapter<>(this, R.layout.user_switcher_item, R.id.listview_item_textview, users));
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dialog.dismiss();
+                mPresenter.onUserSelected(users[position]);
+            }
+        });
+        dialog.show();
     }
 
     @Override
