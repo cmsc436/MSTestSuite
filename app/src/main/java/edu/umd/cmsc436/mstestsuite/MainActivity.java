@@ -18,9 +18,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.Arrays;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 
@@ -202,9 +205,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void showUserSwitcher(final String[] users) {
         final Dialog dialog = new AppCompatDialog(this);
 
+        Arrays.sort(users);
         @SuppressLint("InflateParams") // it's fine I swear
         View root = dialog.getLayoutInflater().inflate(R.layout.user_switcher, null, false);
         ListView lv = (ListView) root.findViewById(R.id.users_listview);
+        final EditText et = (EditText) root.findViewById(R.id.new_user_edittext);
+        Button btn = (Button) root.findViewById(R.id.new_user_create_button);
 
         lv.setAdapter(new ArrayAdapter<>(this, R.layout.user_switcher_item, R.id.listview_item_textview, users));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -212,6 +218,17 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
                 mPresenter.onUserSelected(users[position]);
+            }
+        });
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String user = et.getText().toString();
+                if (user.length() > 0) {
+                    dialog.dismiss();
+                    mPresenter.onUserSelected(user);
+                }
             }
         });
 

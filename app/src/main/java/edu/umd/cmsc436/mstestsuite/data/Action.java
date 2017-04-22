@@ -24,6 +24,10 @@ public class Action {
         }
     }
 
+    void setAction (Runnable r) {
+        mAction = r;
+    }
+
     int getIconResource() {
         return mIconResource;
     }
