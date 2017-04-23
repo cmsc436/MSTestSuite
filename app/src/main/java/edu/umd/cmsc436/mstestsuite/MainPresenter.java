@@ -3,29 +3,22 @@ package edu.umd.cmsc436.mstestsuite;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import edu.umd.cmsc436.mstestsuite.data.Action;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
 import edu.umd.cmsc436.mstestsuite.model.PharmacistService;
+import edu.umd.cmsc436.mstestsuite.model.UserManager;
 
 /**
  * Do the logic of things without worrying about the view
  */
 
 class MainPresenter implements MainContract.Presenter, TestApp.Events {
-
-    private static final String GLOBAL_PREFS_NAME = "GLOBAL";
-    private static final String KEY_CUR_USER = "cur user";
-    private static final String KEY_ALL_USERS = "all users";
 
     private final Action[] actions = new Action[] {
             new Action("Practice", R.mipmap.ic_launcher, new Runnable() {
@@ -38,7 +31,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
             new Action("Switch User", R.mipmap.ic_launcher_round, new Runnable() {
                 @Override
                 public void run() {
-                    mView.showUserSwitcher(mAllUsers.toArray(new String[mAllUsers.size()]));
+                    mView.showUserSwitcher(mUserManager.getAllUsers().toArray(new String[mUserManager.getAllUsers().size()]));
                 }
             }),
             new Action("Help", R.mipmap.ic_launcher, null),
@@ -49,8 +42,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     private MainContract.View mView;
 
     private boolean isPractice;
-    private String mCurUser;
-    private Set<String> mAllUsers;
+    private UserManager mUserManager;
     private ActionsAdapter mMainAdapter;
     private ActionsAdapter mPracticeModeAdapter;
 
@@ -63,17 +55,15 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
         LocalBroadcastManager.getInstance(mView.getContext()).registerReceiver(mLocalReceiver,
                 PharmacistService.ON_FINISH_FILTER);
 
-        SharedPreferences prefs = mView.getContext().getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE);
-
-        mCurUser = prefs.getString(KEY_CUR_USER, "patient");
-
-        HashSet<String> defaultSet = new HashSet<>();
-        defaultSet.add(mCurUser);
-        mAllUsers = prefs.getStringSet(KEY_ALL_USERS, defaultSet);
+        mUserManager = new UserManager(mView.getContext());
+        if (mUserManager.getCurUserID() == null) {
+            UserManager.initWithUser(mView.getContext(), "default patient", UserManager.Handedness.RIGHT, "1/1/1970");
+            mUserManager = new UserManager(mView.getContext());
+        }
 
         TestApp[] apps = loadAppInfo();
 
-        mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mCurUser));
+        mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
         mPracticeModeAdapter = new ActionsAdapter(apps, mView.getContext().getString(R.string.practice_mode_header_text));
 
         mMainAdapter.setEnabled(0, false);
@@ -81,7 +71,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
         mView.loadTestApps(mMainAdapter);
 
         Intent i = new Intent(mView.getContext(), PharmacistService.class);
-        i.putExtra(PharmacistService.KEY_PATIENT_ID, mCurUser);
+        i.putExtra(PharmacistService.KEY_PATIENT_ID, mUserManager.getCurUserID());
         mView.getContext().startService(i);
     }
 
@@ -146,14 +136,14 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
     @Override
     public void onUserSelected(String patient_id) {
-        mCurUser = patient_id;
-        mAllUsers.add(mCurUser);
-        SharedPreferences prefs = mView.getContext().getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE);
-        prefs.edit()
-                .putString(KEY_CUR_USER, mCurUser)
-                .putStringSet(KEY_ALL_USERS, mAllUsers)
-                .apply();
-        mMainAdapter.setHeader(mView.getContext().getString(R.string.main_actions_header, mCurUser));
+        mUserManager.onUserSelected(patient_id);
+        mMainAdapter.setHeader(mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
+    }
+
+    @Override
+    public void onUserCreated(String patient_id, UserManager.Handedness h, String dateOfBirth) {
+        mUserManager.onUserCreated(patient_id, h, dateOfBirth);
+        mMainAdapter.setHeader(mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
     }
 
     private BroadcastReceiver mLocalReceiver = new BroadcastReceiver() {

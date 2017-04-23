@@ -24,8 +24,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
+import edu.umd.cmsc436.mstestsuite.model.UserManager;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
@@ -205,7 +207,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void showUserSwitcher(final String[] users) {
         final Dialog dialog = new AppCompatDialog(this);
 
-        Arrays.sort(users);
+        Arrays.sort(users, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.toLowerCase().compareTo(o2.toLowerCase());
+            }
+        });
+
         @SuppressLint("InflateParams") // it's fine I swear
         View root = dialog.getLayoutInflater().inflate(R.layout.user_switcher, null, false);
         ListView lv = (ListView) root.findViewById(R.id.users_listview);
@@ -227,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 String user = et.getText().toString();
                 if (user.length() > 0) {
                     dialog.dismiss();
-                    mPresenter.onUserSelected(user);
+                    mPresenter.onUserCreated(user, UserManager.Handedness.RIGHT, "1/1/1970");
                 }
             }
         });
