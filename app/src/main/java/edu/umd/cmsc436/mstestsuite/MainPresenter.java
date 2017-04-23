@@ -4,7 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,20 +27,6 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     private static final String KEY_CUR_USER = "cur user";
     private static final String KEY_ALL_USERS = "all users";
 
-    private final TestApp[] apps = new TestApp[]{
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 1", R.mipmap.ic_launcher, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 2", R.mipmap.ic_launcher_round, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 3", R.mipmap.ic_launcher, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 4", R.mipmap.ic_launcher_round, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 5", R.mipmap.ic_launcher, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 6", R.mipmap.ic_launcher_round, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 7", R.mipmap.ic_launcher, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 8", R.mipmap.ic_launcher_round, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 9", R.mipmap.ic_launcher, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 10", R.mipmap.ic_launcher_round, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 11", R.mipmap.ic_launcher, this),
-            new TestApp("edu.umd.cmsc436.mstestsuite", "Test 12", R.mipmap.ic_launcher_round, this),
-    };
     private final Action[] actions = new Action[] {
             new Action("Practice", R.mipmap.ic_launcher, new Runnable() {
                 @Override
@@ -82,6 +71,8 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
         defaultSet.add(mCurUser);
         mAllUsers = prefs.getStringSet(KEY_ALL_USERS, defaultSet);
 
+        TestApp[] apps = loadAppInfo();
+
         mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mCurUser));
         mPracticeModeAdapter = new ActionsAdapter(apps, mView.getContext().getString(R.string.practice_mode_header_text));
 
@@ -92,6 +83,29 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
         Intent i = new Intent(mView.getContext(), PharmacistService.class);
         i.putExtra(PharmacistService.KEY_PATIENT_ID, mCurUser);
         mView.getContext().startService(i);
+    }
+
+    private TestApp[] loadAppInfo() {
+        Resources res = mView.getContext().getResources();
+        TypedArray package_names = res.obtainTypedArray(R.array.package_names);
+        TypedArray display_names = res.obtainTypedArray(R.array.display_names);
+        TypedArray icons = res.obtainTypedArray(R.array.icons);
+
+        TestApp[] apps = new TestApp[package_names.length()];
+        if (package_names.length() == display_names.length() && display_names.length() == icons.length()) {
+            for (int i = 0; i < package_names.length(); i++) {
+                apps[i] = new TestApp(package_names.getString(i), display_names.getString(i), icons.getResourceId(i, R.mipmap.ic_launcher), this);
+            }
+        } else {
+            Log.e(getClass().getCanonicalName(), "XML resource arrays not same length");
+            apps = new TestApp[0];
+        }
+
+        package_names.recycle();
+        display_names.recycle();
+        icons.recycle();
+
+        return apps;
     }
 
     @Override

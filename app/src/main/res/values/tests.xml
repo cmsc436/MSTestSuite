@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="package_names">
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"edu.umd.cmsc436.mstestsuite"</item>
+    </array>
+
+    <array name="display_names">
+        <item>"Test 1"</item>
+        <item>"Test 2"</item>
+        <item>"Test 3"</item>
+        <item>"Test 4"</item>
+        <item>"Test 5"</item>
+        <item>"Test 6"</item>
+        <item>"Test 7"</item>
+        <item>"Test 8"</item>
+        <item>"Test 9"</item>
+        <item>"Test 10"</item>
+        <item>"Test 11"</item>
+        <item>"Test 12"</item>
+    </array>
+
+    <array name="icons">
+        <item>@mipmap/ic_launcher</item>
+        <item>@mipmap/ic_launcher_round</item>
+        <item>@mipmap/ic_launcher</item>
+        <item>@mipmap/ic_launcher_round</item>
+        <item>@mipmap/ic_launcher</item>
+        <item>@mipmap/ic_launcher_round</item>
+        <item>@mipmap/ic_launcher</item>
+        <item>@mipmap/ic_launcher_round</item>
+        <item>@mipmap/ic_launcher</item>
+        <item>@mipmap/ic_launcher_round</item>
+        <item>@mipmap/ic_launcher</item>
+        <item>@mipmap/ic_launcher_round</item>
+    </array>
+
+    <!-- TODO: Add an array for supported appendages, with each <item> as a <string-array> -->
+</resources>
