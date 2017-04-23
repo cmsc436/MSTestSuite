@@ -67,6 +67,10 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
                 PharmacistService.ON_FINISH_FILTER);
 
         mUserManager = new UserManager(mView.getContext());
+        if (mUserManager.getCurUserID() == null) {
+            UserManager.initWithUser(mView.getContext(), "default patient", UserManager.Handedness.RIGHT, "1/1/1970");
+            mUserManager = new UserManager(mView.getContext());
+        }
 
         mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
         mPracticeModeAdapter = new ActionsAdapter(apps, mView.getContext().getString(R.string.practice_mode_header_text));
@@ -119,6 +123,12 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     @Override
     public void onUserSelected(String patient_id) {
         mUserManager.onUserSelected(patient_id);
+        mMainAdapter.setHeader(mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
+    }
+
+    @Override
+    public void onUserCreated(String patient_id, UserManager.Handedness h, String dateOfBirth) {
+        mUserManager.onUserCreated(patient_id, h, dateOfBirth);
         mMainAdapter.setHeader(mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
     }
 

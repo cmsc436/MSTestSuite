@@ -22,30 +22,68 @@ public class UserManager {
     private static final String KEY_HANDEDNESS = "handedness";
     private static final String KEY_DATE_OF_BIRTH = "dob";
 
-    private static final String DEFAULT_PATIENT_ID = "default patient";
+    /**
+     * Use when no users are available
+     * @param c current Context
+     * @param patient_id Patient id
+     * @param handedness enum of which hand they use
+     * @param dateOfBirth any old string for now, should use real dates later
+     */
+    public static void initWithUser (Context c, String patient_id, Handedness handedness, String dateOfBirth) {
+        SharedPreferences prefs = c.getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE);
+
+        HashSet<String> startSet = new HashSet<>();
+        startSet.add(patient_id);
+        prefs.edit()
+                .putString(KEY_CUR_USER, patient_id)
+                .putStringSet(KEY_ALL_USERS, startSet)
+                .apply();
+
+        prefs = c.getSharedPreferences(patient_id, Context.MODE_PRIVATE);
+        prefs.edit()
+                .putInt(KEY_HANDEDNESS, handedness.ordinal())
+                .putString(KEY_DATE_OF_BIRTH, dateOfBirth)
+                .apply();
+    }
 
     public UserManager (Context c) {
         mContext = c;
 
         SharedPreferences prefs = c.getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE);
 
-        HashSet<String> defaultSet = new HashSet<>();
-        defaultSet.add(DEFAULT_PATIENT_ID);
-        mAllUsers = prefs.getStringSet(KEY_ALL_USERS, defaultSet);
+        mAllUsers = prefs.getStringSet(KEY_ALL_USERS, new HashSet<String>());
 
-        String curUserId = prefs.getString(KEY_CUR_USER, DEFAULT_PATIENT_ID);
-        mCurUser = readUser(curUserId);
+        if (mAllUsers.size() == 0) {
+            mCurUser = null;
+        }
+
+        String curUserId = prefs.getString(KEY_CUR_USER, "");
+
+        if (curUserId.equals("")) {
+            mCurUser = null;
+        } else {
+            mCurUser = readUser(curUserId);
+        }
+    }
+
+    public void onUserCreated (String id, Handedness handedness, String dateOfBirth) {
+        SharedPreferences prefs = mContext.getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE);
+
+        mAllUsers.add(id);
+        prefs.edit().putStringSet(KEY_ALL_USERS, mAllUsers).apply();
+        writeUser(new User(id, handedness.ordinal(), dateOfBirth));
+        onUserSelected(id);
     }
 
     public void onUserSelected (String id) {
-        if (mAllUsers.contains(id)) {
-            mCurUser = readUser(id);
+        if (!mAllUsers.contains(id)) {
             return;
         }
 
-        mAllUsers.add(id);
-        mCurUser = new User(id, 0, "1/1/1970"); // TODO actually get that data from UI
-        writeUser(mCurUser);
+        mCurUser = readUser(id);
+        mContext.getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE).edit()
+                .putString(KEY_CUR_USER, id)
+                .apply();
     }
 
     private User readUser(String name) {
@@ -65,6 +103,10 @@ public class UserManager {
     }
 
     public String getCurUserID () {
+        if (mCurUser == null) {
+            return null;
+        }
+
         return mCurUser.id;
     }
 
@@ -84,7 +126,7 @@ public class UserManager {
         }
     }
 
-    private enum Handedness {
+    public enum Handedness {
         RIGHT,
         LEFT,
         AMBIDEXTROUS,

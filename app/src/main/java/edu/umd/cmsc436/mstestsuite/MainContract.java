@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
+import edu.umd.cmsc436.mstestsuite.model.UserManager;
 
 /**
  * Define which part of the app can do what
@@ -32,5 +33,6 @@ interface MainContract {
         boolean onBackPressed ();
         void onDestroy ();
         void onUserSelected (String patient_id);
+        void onUserCreated (String patient_id, UserManager.Handedness h, String dateOfBirth);
     }
 }
