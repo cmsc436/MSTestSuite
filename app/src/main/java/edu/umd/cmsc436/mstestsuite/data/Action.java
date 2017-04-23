@@ -11,11 +11,13 @@ public class Action {
     private Runnable mAction;
     private int mIconResource;
     private String mDisplayName;
+    private boolean mEnabled;
 
     public Action (String displayName, int iconResource, @Nullable Runnable runnable) {
         this.mAction = runnable;
         this.mIconResource = iconResource;
         this.mDisplayName = displayName;
+        this.mEnabled = true;
     }
 
     void run() {
@@ -26,6 +28,14 @@ public class Action {
 
     void setAction (Runnable r) {
         mAction = r;
+    }
+
+    void setEnabled(boolean b) {
+        mEnabled = b;
+    }
+
+    boolean isEnabled () {
+        return mEnabled;
     }
 
     int getIconResource() {

@@ -32,6 +32,11 @@ public class ActionsAdapter extends RecyclerView.Adapter<ItemHolder> {
         notifyItemChanged(0);
     }
 
+    public void setEnabled(int position, boolean isEnabled) {
+        mActions[position].setEnabled(isEnabled);
+        notifyItemChanged(position+1);
+    }
+
     @Override
     public int getItemViewType(int position) {
         return position == 0 ? VIEWTYPE_HEADER : VIEWTYPE_ITEM;
@@ -56,14 +61,21 @@ public class ActionsAdapter extends RecyclerView.Adapter<ItemHolder> {
             return;
         }
 
-        holder.icon.setImageResource(mActions[position-1].getIconResource());
-        holder.label.setText(mActions[position-1].getDisplayName());
-        holder.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mActions[holder.getAdapterPosition()-1].run();
-            }
-        });
+        holder.icon.setImageResource(mActions[position - 1].getIconResource());
+        holder.label.setText(mActions[position - 1].getDisplayName());
+
+        if (mActions[position-1].isEnabled()) {
+            holder.root.setAlpha(1.0f);
+            holder.root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mActions[holder.getAdapterPosition() - 1].run();
+                }
+            });
+        } else {
+            holder.root.setAlpha(.5f);
+            holder.root.setClickable(false);
+        }
     }
 
     @Override

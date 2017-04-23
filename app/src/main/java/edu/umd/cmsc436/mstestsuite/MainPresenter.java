@@ -84,6 +84,9 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
         mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mCurUser));
         mPracticeModeAdapter = new ActionsAdapter(apps, mView.getContext().getString(R.string.practice_mode_header_text));
+
+        mMainAdapter.setEnabled(0, false);
+
         mView.loadTestApps(mMainAdapter);
 
         Intent i = new Intent(mView.getContext(), PharmacistService.class);
@@ -142,7 +145,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     private BroadcastReceiver mLocalReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mView.showToast("done");
+            mMainAdapter.setEnabled(0, true);
         }
     };
 
