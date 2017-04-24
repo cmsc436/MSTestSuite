@@ -16,14 +16,14 @@
     </array>
 
     <array name="display_names">
-        <item>"Tap Test"</item>
-        <item>"Spiral Test"</item>
-        <item>"Balance Test"</item>
-        <item>"Level Test"</item>
-        <item>"Pop Test"</item>
-        <item>"Flex Test"</item>
-        <item>"Indoor Walking Test"</item>
-        <item>"Outdoor Walking Test"</item>
+        <item>"Tap"</item>
+        <item>"Spiral"</item>
+        <item>"Balance"</item>
+        <item>"Level"</item>
+        <item>"Pop"</item>
+        <item>"Flex"</item>
+        <item>"Walk Indoors"</item>
+        <item>"Walk Outdoors"</item>
         <item>"Test 9"</item>
         <item>"Test 10"</item>
         <item>"Test 11"</item>
