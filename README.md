@@ -5,9 +5,11 @@ Front end for the various MS test apps.
 ## How to integrate a test app
 
 There are three intent actions that should be caught:
-- `edu.umd.cmsc436.action.TRIAL`
-- `edu.umd.cmsc436.action.PRACTICE`
-- `edu.umd.cmsc436.action.HELP`
+- `<your package name>.action.TRIAL`
+- `<your package name>.action.PRACTICE`
+- `<your package name>.action.HELP`
+
+For example, if MS Test Suite reacted to Practice Mode, it would catch intents with the `edu.umd.cmsc436.mstestsuite.action.PRACTICE` action.  This way, a specific test and mode can be simulateously specified.
 
 `.PRACTICE` and `.HELP` don't have any arguments or expect any results.
 
