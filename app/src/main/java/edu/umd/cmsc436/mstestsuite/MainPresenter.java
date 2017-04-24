@@ -57,7 +57,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
         mUserManager = new UserManager(mView.getContext());
         if (mUserManager.getCurUserID() == null) {
-            UserManager.initWithUser(mView.getContext(), "default patient", UserManager.Handedness.RIGHT, "1/1/1970");
+            UserManager.initWithUser(mView.getContext(), "default patient", UserManager.Handedness.RIGHT, "1/1/1970", UserManager.Gender.MALE);
             mUserManager = new UserManager(mView.getContext());
         }
 
@@ -141,8 +141,8 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     }
 
     @Override
-    public void onUserCreated(String patient_id, UserManager.Handedness h, String dateOfBirth) {
-        mUserManager.onUserCreated(patient_id, h, dateOfBirth);
+    public void onUserCreated(String patient_id, UserManager.Handedness h, String dateOfBirth, UserManager.Gender gender) {
+        mUserManager.onUserCreated(patient_id, h, dateOfBirth, gender);
         mMainAdapter.setHeader(mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
     }
 

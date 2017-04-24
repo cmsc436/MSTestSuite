@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 String user = et.getText().toString();
                 if (user.length() > 0) {
                     dialog.dismiss();
-                    mPresenter.onUserCreated(user, UserManager.Handedness.RIGHT, "1/1/1970");
+                    mPresenter.onUserCreated(user, UserManager.Handedness.RIGHT, "1/1/1970", UserManager.Gender.MALE);
                 }
             }
         });
