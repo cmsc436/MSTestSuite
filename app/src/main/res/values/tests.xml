@@ -16,14 +16,14 @@
     </array>
 
     <array name="display_names">
-        <item>"Test 1"</item>
-        <item>"Test 2"</item>
-        <item>"Test 3"</item>
-        <item>"Test 4"</item>
-        <item>"Test 5"</item>
-        <item>"Test 6"</item>
-        <item>"Test 7"</item>
-        <item>"Test 8"</item>
+        <item>"Tap Test"</item>
+        <item>"Spiral Test"</item>
+        <item>"Balance Test"</item>
+        <item>"Level Test"</item>
+        <item>"Pop Test"</item>
+        <item>"Flex Test"</item>
+        <item>"Indoor Walking Test"</item>
+        <item>"Outdoor Walking Test"</item>
         <item>"Test 9"</item>
         <item>"Test 10"</item>
         <item>"Test 11"</item>
@@ -31,14 +31,14 @@
     </array>
 
     <array name="icons">
-        <item>@mipmap/ic_launcher</item>
-        <item>@mipmap/ic_launcher_round</item>
-        <item>@mipmap/ic_launcher</item>
-        <item>@mipmap/ic_launcher_round</item>
-        <item>@mipmap/ic_launcher</item>
-        <item>@mipmap/ic_launcher_round</item>
-        <item>@mipmap/ic_launcher</item>
-        <item>@mipmap/ic_launcher_round</item>
+        <item>@drawable/ic_hand_final</item>
+        <item>@drawable/ic_spiral</item>
+        <item>@drawable/ic_balance</item>
+        <item>@drawable/ic_level_1</item>
+        <item>@drawable/ic_pop</item>
+        <item>@drawable/ic_flex</item>
+        <item>@drawable/ic_walking_inside</item>
+        <item>@drawable/ic_walking_outside</item>
         <item>@mipmap/ic_launcher</item>
         <item>@mipmap/ic_launcher_round</item>
         <item>@mipmap/ic_launcher</item>

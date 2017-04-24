@@ -21,22 +21,22 @@ import edu.umd.cmsc436.mstestsuite.model.UserManager;
 class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
     private final Action[] actions = new Action[] {
-            new Action("Practice", R.mipmap.ic_launcher, new Runnable() {
+            new Action("Practice", R.drawable.ic_practice_mode, new Runnable() {
                 @Override
                 public void run() {
                     isPractice = true;
                     mView.loadTestApps(mPracticeModeAdapter);
                 }
             }),
-            new Action("Switch User", R.mipmap.ic_launcher_round, new Runnable() {
+            new Action("Switch User", R.drawable.ic_switch_users, new Runnable() {
                 @Override
                 public void run() {
                     mView.showUserSwitcher(mUserManager.getAllUsers().toArray(new String[mUserManager.getAllUsers().size()]));
                 }
             }),
-            new Action("Help", R.mipmap.ic_launcher, null),
-            new Action("History", R.mipmap.ic_launcher_round, null),
-            new Action("Feedback", R.mipmap.ic_launcher, null),
+            new Action("Help", R.drawable.ic_help, null),
+            new Action("History", R.drawable.ic_history, null),
+            new Action("Feedback", R.drawable.ic_feedback, null),
     };
 
     private MainContract.View mView;
