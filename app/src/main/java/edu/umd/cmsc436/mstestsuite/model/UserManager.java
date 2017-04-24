@@ -21,6 +21,7 @@ public class UserManager {
     private static final String KEY_ALL_USERS = "all users";
     private static final String KEY_HANDEDNESS = "handedness";
     private static final String KEY_DATE_OF_BIRTH = "dob";
+    private static final String KEY_GENDER = "gender";
 
     /**
      * Use when no users are available
@@ -29,7 +30,7 @@ public class UserManager {
      * @param handedness enum of which hand they use
      * @param dateOfBirth any old string for now, should use real dates later
      */
-    public static void initWithUser (Context c, String patient_id, Handedness handedness, String dateOfBirth) {
+    public static void initWithUser (Context c, String patient_id, Handedness handedness, String dateOfBirth, Gender gender) {
         SharedPreferences prefs = c.getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE);
 
         HashSet<String> startSet = new HashSet<>();
@@ -43,6 +44,7 @@ public class UserManager {
         prefs.edit()
                 .putInt(KEY_HANDEDNESS, handedness.ordinal())
                 .putString(KEY_DATE_OF_BIRTH, dateOfBirth)
+                .putInt(KEY_GENDER, gender.ordinal())
                 .apply();
     }
 
@@ -66,12 +68,12 @@ public class UserManager {
         }
     }
 
-    public void onUserCreated (String id, Handedness handedness, String dateOfBirth) {
+    public void onUserCreated (String id, Handedness handedness, String dateOfBirth, Gender gender) {
         SharedPreferences prefs = mContext.getSharedPreferences(GLOBAL_PREFS_NAME, Context.MODE_PRIVATE);
 
         mAllUsers.add(id);
         prefs.edit().putStringSet(KEY_ALL_USERS, mAllUsers).apply();
-        writeUser(new User(id, handedness.ordinal(), dateOfBirth));
+        writeUser(new User(id, handedness.ordinal(), dateOfBirth, gender.ordinal()));
         onUserSelected(id);
     }
 
@@ -90,8 +92,9 @@ public class UserManager {
         SharedPreferences prefs = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
         int handedness = prefs.getInt(KEY_HANDEDNESS, 0);
         String dob = prefs.getString(KEY_DATE_OF_BIRTH, "1/1/1970");
+        int gender = prefs.getInt(KEY_GENDER, 0);
 
-        return new User(name, handedness, dob);
+        return new User(name, handedness, dob, gender);
     }
 
     private void writeUser(User u) {
@@ -99,6 +102,7 @@ public class UserManager {
         prefs.edit()
                 .putInt(KEY_HANDEDNESS, u.handedness.ordinal())
                 .putString(KEY_DATE_OF_BIRTH, u.dateOfBirth)
+                .putInt(KEY_GENDER, u.gender.ordinal())
                 .apply();
     }
 
@@ -118,11 +122,13 @@ public class UserManager {
         String id;
         Handedness handedness;
         String dateOfBirth; // TODO change to a real type for dates
+        Gender gender;
 
-        User (String id, int handedness, String dateOfBirth) {
+        User (String id, int handedness, String dateOfBirth, int gender) {
             this.id = id;
             this.handedness = Handedness.values()[handedness];
             this.dateOfBirth = dateOfBirth;
+            this.gender = Gender.values()[gender];
         }
     }
 
@@ -130,5 +136,11 @@ public class UserManager {
         RIGHT,
         LEFT,
         AMBIDEXTROUS,
+    }
+
+    public enum Gender {
+        MALE,
+        FEMALE,
+        OTHER,
     }
 }

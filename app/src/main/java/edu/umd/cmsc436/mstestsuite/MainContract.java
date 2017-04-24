@@ -33,6 +33,6 @@ interface MainContract {
         boolean onBackPressed ();
         void onDestroy ();
         void onUserSelected (String patient_id);
-        void onUserCreated (String patient_id, UserManager.Handedness h, String dateOfBirth);
+        void onUserCreated (String patient_id, UserManager.Handedness h, String dateOfBirth, UserManager.Gender gender);
     }
 }
