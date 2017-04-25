@@ -78,7 +78,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
     private TestApp[] loadAppInfo() {
         Resources res = mView.getContext().getResources();
-        TypedArray package_names = res.obtainTypedArray(R.array.package_names);
+        TypedArray package_names = res.obtainTypedArray(R.array.test_prefixes);
         TypedArray display_names = res.obtainTypedArray(R.array.display_names);
         TypedArray icons = res.obtainTypedArray(R.array.icons);
 
