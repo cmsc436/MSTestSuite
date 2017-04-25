@@ -150,6 +150,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
         @Override
         public void onReceive(Context context, Intent intent) {
             mMainAdapter.setEnabled(0, true);
+            mView.expandBottomSheet();
         }
     };
 
