@@ -139,7 +139,7 @@
                 android:layout_marginTop="8dp"
                 android:padding="16dp"
                 android:text="@string/expanded_practice_button_text"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"

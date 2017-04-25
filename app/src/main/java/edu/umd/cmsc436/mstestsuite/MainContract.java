@@ -17,9 +17,9 @@ interface MainContract {
         void expandBottomSheet ();
         void collapseBottomSheet ();
         void hideBottomSheet ();
-        void loadTestApps (ActionsAdapter adapter);
+        void loadActions(ActionsAdapter adapter);
         void showToast (String message);
-        void startActivity (String packageName) throws ActivityNotFoundException;
+        void startPracticeMode(String packageName) throws ActivityNotFoundException;
         Context getContext ();
         void showUserSwitcher (String[] users);
     }

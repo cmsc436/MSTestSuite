@@ -163,15 +163,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void loadTestApps(final ActionsAdapter adapter) {
+    public void loadActions(final ActionsAdapter adapter) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final int duration = getResources().getInteger(android.R.integer.config_longAnimTime);
-                final int translateY = 50;
+                final int duration = getResources().getInteger(android.R.integer.config_shortAnimTime);
                 mRecyclerView.animate()
                         .alpha(0f)
-                        .translationYBy(translateY)
+                        .translationY(25)
                         .setDuration(duration)
                         .withEndAction(new Runnable() {
                             @Override
@@ -180,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                                 mRecyclerView.setAdapter(adapter);
                                 mRecyclerView.animate()
                                         .alpha(1.0f)
-                                        .translationYBy(-translateY)
+                                        .translationY(0)
                                         .setDuration(duration)
                                         .start();
                             }
@@ -196,8 +195,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void startActivity(String packageName) throws ActivityNotFoundException {
-        Intent i = new Intent(packageName);
+    public void startPracticeMode(String packageName) throws ActivityNotFoundException {
+        Intent i = new Intent(packageName + ".action.PRACTICE");
+        i.addCategory(Intent.CATEGORY_DEFAULT);
         startActivity(i);
     }
 
