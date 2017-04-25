@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="package_names">
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"cmsc436.mstracer"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
+    <array name="test_prefixes">
+        <item>"edu.umd.cmsc436.tap"</item>
+        <item>"edu.umd.cmsc436.spiral"</item>
+        <item>"edu.umd.cmsc436.balance"</item>
+        <item>"edu.umd.cmsc436.level"</item>
+        <item>"edu.umd.cmsc436.pop"</item>
+        <item>"edu.umd.cmsc436.flex"</item>
+        <item>"edu.umd.cmsc436.walk.outdoors"</item>
+        <item>"edu.umd.cmsc436.walk.indoors"</item>
     </array>
 
     <array name="display_names">
