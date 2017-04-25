@@ -19,7 +19,7 @@ For example, if MS Test Suite reacted to Practice Mode, it would catch intents w
 - Trial Out Of, an integer, the current appendage's number of trials, for display purposes
 - Patient ID, a string, for storing raw data appropriately
 
-`.TRIAL` also expects a single float result, the score for the trial.  This can be done with the [`Activity#setResult(int, Intent)`](https://developer.android.com/reference/android/app/Activity.html#setResult(int, android.content.Intent)) method, and the intent from the `TrialMode.getResultIntent(float)` helper static method.
+`.TRIAL` also expects a single float result, the score for the trial.  This can be done with the [`Activity#setResult(int, Intent)`](https://developer.android.com/reference/android/app/Activity.html#setResult(int%2c%20android.content.Intent)) method, and the intent from the `TrialMode.getResultIntent(float)` helper static method.
 
 There are a few static methods to help with argument extraction as well:
 - `getAppendage(Intent)`
