@@ -8,19 +8,25 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.ColorBlind" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary436</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark436</item>
+        <item name="colorAccent">@color/colorAccent436</item>
+    </style>
+
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
-    <style name="SquareLayoutTheme" parent="ThemeOverlay.AppCompat.Light">
+    <style name="SquareLayoutTheme" parent="AppTheme.ColorBlind">
         <item name="android:background">@drawable/ripple</item>
         <item name="android:color">@android:color/white</item>
-        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="colorControlHighlight">?attr/colorAccent</item>
     </style>
 
     <style name="DailyButtonTheme" parent="Widget.AppCompat.Button.Colored">
         <item name="android:textSize">22sp</item>
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:textAlignment">center</item>
         <item name="android:drawableRight">@drawable/ic_arrow_forward_black_24dp</item>
     </style>
