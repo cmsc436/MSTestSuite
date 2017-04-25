@@ -1,19 +1,19 @@
 package edu.umd.cmsc436.mstestsuite;
 
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
+
+import java.util.List;
 
 import edu.umd.cmsc436.mstestsuite.data.Action;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
-import edu.umd.cmsc436.mstestsuite.model.PharmacistService;
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
+import edu.umd.cmsc436.sheets.Sheets;
 
 /**
  * Do the logic of things without worrying about the view
@@ -46,15 +46,13 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     private UserManager mUserManager;
     private ActionsAdapter mMainAdapter;
     private ActionsAdapter mPracticeModeAdapter;
+    private Sheets mSheet;
 
     MainPresenter(MainContract.View v) {
         mView = v;
         mView.hideBottomSheet();
 
         isPractice = false;
-
-        LocalBroadcastManager.getInstance(mView.getContext()).registerReceiver(mLocalReceiver,
-                PharmacistService.ON_FINISH_FILTER);
 
         mUserManager = new UserManager(mView.getContext());
         if (mUserManager.getCurUserID() == null) {
@@ -71,9 +69,12 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
         mView.loadActions(mMainAdapter);
 
-        Intent i = new Intent(mView.getContext(), PharmacistService.class);
-        i.putExtra(PharmacistService.KEY_PATIENT_ID, mUserManager.getCurUserID());
-        mView.getContext().startService(i);
+        mSheet = new Sheets(mView.getHost(),
+                mView.getActivity(),
+                mView.getContext().getString(R.string.app_name),
+                mView.getContext().getString(R.string.prescription_spreadsheet_id),
+                mView.getContext().getString(R.string.prescription_spreadsheet_id));
+        mSheet.fetchPrescription(mUserManager.getCurUserID());
     }
 
     private TestApp[] loadAppInfo() {
@@ -132,7 +133,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
     @Override
     public void onDestroy() {
-        LocalBroadcastManager.getInstance(mView.getContext()).unregisterReceiver(mLocalReceiver);
+        // nothing
     }
 
     @Override
@@ -147,12 +148,27 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
         mMainAdapter.setHeader(mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
     }
 
-    private BroadcastReceiver mLocalReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mMainAdapter.setEnabled(0, true);
+    @Override
+    public void onPrescriptionReady(List<String> raw_data) {
+        // create prescription, but for now just show practice mode
+        if (raw_data == null) {
+            mView.showToast("NULL raw data");
+            return;
         }
-    };
+
+        Log.i(getClass().getCanonicalName(), raw_data.toString());
+        mMainAdapter.setEnabled(0, true);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mSheet.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mSheet.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
     @Override
     public void onAppSelected(TestApp app) {

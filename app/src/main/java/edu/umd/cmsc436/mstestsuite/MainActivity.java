@@ -1,6 +1,7 @@
 package edu.umd.cmsc436.mstestsuite;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -25,11 +26,13 @@ import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
+import edu.umd.cmsc436.sheets.Sheets;
 
-public class MainActivity extends AppCompatActivity implements MainContract.View {
+public class MainActivity extends AppCompatActivity implements MainContract.View, Sheets.Host {
 
     private RecyclerView mRecyclerView;
     private GridLayoutManager mLayoutManager;
@@ -245,9 +248,60 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public Sheets.Host getHost() {
+        return this;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+    @Override
     public void onBackPressed() {
         if (mPresenter.onBackPressed()) {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public int getRequestCode(Sheets.Action action) {
+        switch (action) {
+            case REQUEST_ACCOUNT_NAME:
+                return 436;
+            case REQUEST_AUTHORIZATION:
+                return 437;
+            case REQUEST_CONNECTION_RESOLUTION:
+                return 438;
+            case REQUEST_PERMISSIONS:
+                return 439;
+            case REQUEST_PLAY_SERVICES:
+                return 440;
+            default:
+                return 435;
+        }
+    }
+
+    @Override
+    public void notifyFinished(Exception e) {
+        // nothing for now
+    }
+
+    @Override
+    public void onPrescriptionReady(List<String> list) {
+        // new prescription for user!
+        mPresenter.onPrescriptionReady(list);
     }
 }

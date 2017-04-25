@@ -10,4 +10,5 @@
     <string name="new_patient_id_hint_text">New patient ID</string>
     <string name="create_user_button_text">Create</string>
     <string name="main_actions_header">Welcome, %s</string>
+    <string name="prescription_spreadsheet_id">1g3R4ul84AY189_CkJ7MwXQ8C-SBumZkWh6feoBSONmo</string>
 </resources>
