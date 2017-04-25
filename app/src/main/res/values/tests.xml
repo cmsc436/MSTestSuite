@@ -2,7 +2,7 @@
 <resources>
     <array name="package_names">
         <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
+        <item>"cmsc436.mstracer"</item>
         <item>"edu.umd.cmsc436.mstestsuite"</item>
         <item>"edu.umd.cmsc436.mstestsuite"</item>
         <item>"edu.umd.cmsc436.mstestsuite"</item>

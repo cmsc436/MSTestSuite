@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void loadTestApps(final ActionsAdapter adapter) {
+    public void loadActions(final ActionsAdapter adapter) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -193,8 +193,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void startActivity(String packageName) throws ActivityNotFoundException {
-        Intent i = new Intent(packageName);
+    public void startPracticeMode(String packageName) throws ActivityNotFoundException {
+        Intent i = new Intent(packageName + ".action.PRACTICE");
+        i.addCategory(Intent.CATEGORY_DEFAULT);
         startActivity(i);
     }
 

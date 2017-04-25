@@ -1,5 +1,6 @@
 package edu.umd.cmsc436.mstestsuite;
 
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +26,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
                 @Override
                 public void run() {
                     isPractice = true;
-                    mView.loadTestApps(mPracticeModeAdapter);
+                    mView.loadActions(mPracticeModeAdapter);
                 }
             }),
             new Action("Switch User", R.drawable.ic_switch_users, new Runnable() {
@@ -68,7 +69,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
         mMainAdapter.setEnabled(0, false);
 
-        mView.loadTestApps(mMainAdapter);
+        mView.loadActions(mMainAdapter);
 
         Intent i = new Intent(mView.getContext(), PharmacistService.class);
         i.putExtra(PharmacistService.KEY_PATIENT_ID, mUserManager.getCurUserID());
@@ -122,7 +123,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     public boolean onBackPressed() {
         if (isPractice) {
             isPractice = false;
-            mView.loadTestApps(mMainAdapter);
+            mView.loadActions(mMainAdapter);
             return false;
         } else {
             return true;
@@ -155,7 +156,10 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
     @Override
     public void onAppSelected(TestApp app) {
-        mView.showToast(app.getDisplayName());
-//        mView.startActivity(app.getPackageName());
+        try {
+            mView.startPracticeMode(app.getPackageName());
+        } catch (ActivityNotFoundException anfe) {
+            mView.showToast(app.getDisplayName() + " not found");
+        }
     }
 }
