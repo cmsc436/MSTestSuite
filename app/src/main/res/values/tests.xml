@@ -9,10 +9,6 @@
         <item>"edu.umd.cmsc436.mstestsuite"</item>
         <item>"edu.umd.cmsc436.mstestsuite"</item>
         <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
     </array>
 
     <array name="display_names">
@@ -24,10 +20,6 @@
         <item>"Flex"</item>
         <item>"Walk Indoors"</item>
         <item>"Walk Outdoors"</item>
-        <item>"Test 9"</item>
-        <item>"Test 10"</item>
-        <item>"Test 11"</item>
-        <item>"Test 12"</item>
     </array>
 
     <array name="icons">
@@ -39,10 +31,6 @@
         <item>@drawable/ic_flex</item>
         <item>@drawable/ic_walking_inside</item>
         <item>@drawable/ic_walking_outside</item>
-        <item>@mipmap/ic_launcher</item>
-        <item>@mipmap/ic_launcher_round</item>
-        <item>@mipmap/ic_launcher</item>
-        <item>@mipmap/ic_launcher_round</item>
     </array>
 
     <!-- TODO: Add an array for supported appendages, with each <item> as a <string-array> -->
