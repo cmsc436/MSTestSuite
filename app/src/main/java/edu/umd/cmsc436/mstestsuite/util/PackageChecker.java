@@ -33,7 +33,7 @@ public class PackageChecker extends AsyncTask<TestApp, Void, Map<TestApp, Intege
         Map<TestApp, Integer> results = new HashMap<>();
 
         for (TestApp app : params) {
-            if (packageUtil.wouldSucceed(app.getPackageName())) {
+            if (packageUtil.wouldSucceed(app)) {
                 if (should_update) {
                     results.put(app, UPDATE);
                 }
