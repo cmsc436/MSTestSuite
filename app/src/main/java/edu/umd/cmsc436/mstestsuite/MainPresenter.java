@@ -14,6 +14,7 @@ import edu.umd.cmsc436.mstestsuite.data.Action;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
+import edu.umd.cmsc436.mstestsuite.util.PackageUtil;
 import edu.umd.cmsc436.sheets.Sheets;
 
 /**
@@ -48,6 +49,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events, Sheets.On
     private ActionsAdapter mMainAdapter;
     private ActionsAdapter mPracticeModeAdapter;
     private Sheets mSheet;
+    private TestApp[] mAllApps;
 
     MainPresenter(MainContract.View v) {
         mView = v;
@@ -61,10 +63,10 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events, Sheets.On
             mUserManager = new UserManager(mView.getContext());
         }
 
-        TestApp[] apps = loadAppInfo();
+        mAllApps = loadAppInfo();
 
         mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
-        mPracticeModeAdapter = new ActionsAdapter(apps, mView.getContext().getString(R.string.practice_mode_header_text));
+        mPracticeModeAdapter = new ActionsAdapter(mAllApps, mView.getContext().getString(R.string.practice_mode_header_text));
 
         mMainAdapter.setEnabled(0, false);
 
@@ -175,6 +177,13 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events, Sheets.On
         // reveal proper apps
         // check frequency and last completed in settings to determine if ready
         // store difficulty list and number of trials
+
+        PackageUtil packageUtil = new PackageUtil(mView.getContext());
+        for (TestApp app : mAllApps) {
+            if (!packageUtil.wouldSucceed(app.getPackageName())) {
+                Log.e(getClass().getCanonicalName(), "Not installed: " + app.getDisplayName());
+            }
+        }
 
         // eventually do:
         mMainAdapter.setEnabled(0, true);
