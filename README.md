@@ -21,7 +21,7 @@ The possible values in the curly braces are:
 
 For example, the intent to launch the Practice Mode of the Tap app would have the action `edu.umd.cmsc436.tap.action.PRACTICE`.
 
-`.PRACTICE` and `.HELP` don't have any arguments or expect any results.
+`.PRACTICE` and `.HELP` don't have any arguments or expect any results.  Practice mode itself is relatively unstructured, and should let the patient practice as long as they want before exiting.  Help mode should display instructions or a guide to using the specific test, and then switch to Practice mode.
 
 `.TRIAL` has 5 arguments:
 - Appendage, which is a `Sheets.TestType` (from the [sheets436](https://github.com/cmsc436/sheets436) library)
@@ -39,7 +39,7 @@ There are a few static methods to help with argument extraction as well:
 
 These will help with getting info out of intents delivered with the `.TRIAL` action.
 
-`.TRIAL` also expects a single float result, the score for the trial.  This can be done with the [`Activity#setResult(int, Intent)`](https://developer.android.com/reference/android/app/Activity.html#setResult(int%2c%20android.content.Intent)) method, and the intent from the `TrialMode.getResultIntent(float)` helper static method.
+`.TRIAL` also expects a single float result, the score for the trial.  This can be done with the [`Activity#setResult(int, Intent)`](https://developer.android.com/reference/android/app/Activity.html#setResult(int%2c%20android.content.Intent)) method, and the intent from the `TrialMode.getResultIntent(float)` helper static method.  The `int` argument should be `Activity.RESULT_OK` if everything's okay, or `Activity.RESULT_CANCELLED` if the patient has exited early or there is some other error.
 
 The helper library uses types from the sheets436 library, so make sure to include that as a dependency.  There are also a few color resources defined to help with consistency:
 - `colorPrimary436`, orange
