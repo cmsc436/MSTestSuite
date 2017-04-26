@@ -50,7 +50,7 @@ The helper library uses types from the sheets436 library, so make sure to includ
 
 These values were taken from [colorcombos.com](http://www.colorcombos.com/color-schemes/89/ColorCombo89.html).
 
-Please place APKs of your test apps in [this folder](https://drive.google.com/drive/folders/0B0tPbEe1hFoEWGc4YllWT3hjQ1E?usp=sharing) with the filename ending in `<test type>-<version>.apk`, where `<test type>` is one of the same values as the possible actions ("tap", "spiral", "walk.indoors", etc.) and version is a whole number, that increases with new versions.
+Please place APKs of your test apps in [this folder](https://drive.google.com/drive/folders/0B0tPbEe1hFoEWGc4YllWT3hjQ1E?usp=sharing) with the filename of `<test type>-<version>.apk`, where `<test type>` is one of the same values as the possible actions ("tap", "spiral", "walk.indoors", etc.) and version is a whole number or a number with a single decimal point, that increases with new versions.
 
 ## Prescription Format
 
