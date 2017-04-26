@@ -42,7 +42,6 @@ interface MainContract {
         void onDestroy ();
         void onUserSelected (String patient_id);
         void onUserCreated (String patient_id, UserManager.Handedness h, String dateOfBirth, UserManager.Gender gender);
-        void onPrescriptionReady (List<String> raw_data);
         void onActivityResult(int requestCode, int resultCode, Intent data);
         void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
     }

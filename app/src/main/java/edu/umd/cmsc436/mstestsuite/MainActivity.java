@@ -298,10 +298,4 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void notifyFinished(Exception e) {
         // nothing for now
     }
-
-    @Override
-    public void onPrescriptionReady(List<String> list) {
-        // new prescription for user!
-        mPresenter.onPrescriptionReady(list);
-    }
 }

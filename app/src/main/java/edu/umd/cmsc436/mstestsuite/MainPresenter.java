@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import edu.umd.cmsc436.sheets.Sheets;
  * Do the logic of things without worrying about the view
  */
 
-class MainPresenter implements MainContract.Presenter, TestApp.Events {
+class MainPresenter implements MainContract.Presenter, TestApp.Events, Sheets.OnPrescriptionFetchedListener {
 
     private final Action[] actions = new Action[] {
             new Action("Practice", R.drawable.ic_practice_mode, new Runnable() {
@@ -74,7 +75,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
                 mView.getContext().getString(R.string.app_name),
                 mView.getContext().getString(R.string.prescription_spreadsheet_id),
                 mView.getContext().getString(R.string.prescription_spreadsheet_id));
-        mSheet.fetchPrescription(mUserManager.getCurUserID());
+        mSheet.fetchPrescription(mUserManager.getCurUserID(), this);
     }
 
     private TestApp[] loadAppInfo() {
@@ -149,18 +150,6 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     }
 
     @Override
-    public void onPrescriptionReady(List<String> raw_data) {
-        // create prescription, but for now just show practice mode
-        if (raw_data == null) {
-            mView.showToast("NULL raw data");
-            return;
-        }
-
-        Log.i(getClass().getCanonicalName(), raw_data.toString());
-        mMainAdapter.setEnabled(0, true);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         mSheet.onActivityResult(requestCode, resultCode, data);
     }
@@ -177,5 +166,17 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
         } catch (ActivityNotFoundException anfe) {
             mView.showToast(app.getDisplayName() + " not found");
         }
+    }
+
+    @Override
+    public void onPrescriptionFetched(@Nullable List<String> list) {
+        // Ensure apps installed
+        // check if update
+        // reveal proper apps
+        // check frequency and last completed in settings to determine if ready
+        // store difficulty list and number of trials
+
+        // eventually do:
+        mMainAdapter.setEnabled(0, true);
     }
 }
