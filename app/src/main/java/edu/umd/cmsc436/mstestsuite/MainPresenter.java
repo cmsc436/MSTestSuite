@@ -8,12 +8,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import edu.umd.cmsc436.mstestsuite.data.Action;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
+import edu.umd.cmsc436.mstestsuite.util.PackageChecker;
 import edu.umd.cmsc436.mstestsuite.util.PackageUtil;
 import edu.umd.cmsc436.sheets.Sheets;
 
@@ -21,7 +24,8 @@ import edu.umd.cmsc436.sheets.Sheets;
  * Do the logic of things without worrying about the view
  */
 
-class MainPresenter implements MainContract.Presenter, TestApp.Events, Sheets.OnPrescriptionFetchedListener {
+class MainPresenter implements MainContract.Presenter, TestApp.Events,
+        Sheets.OnPrescriptionFetchedListener, PackageChecker.OnCheckFinishListener {
 
     private final Action[] actions = new Action[] {
             new Action("Practice", R.drawable.ic_practice_mode, new Runnable() {
@@ -178,10 +182,44 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events, Sheets.On
         // check frequency and last completed in settings to determine if ready
         // store difficulty list and number of trials
 
+        if (list == null) {
+            Log.e(getClass().getCanonicalName(), "Null prescription");
+            return;
+        }
+
+        ArrayList<TestApp> desired_apps = new ArrayList<>();
+        for (int i = 0; i < mAllApps.length; i++) {
+            try {
+                int difficulty = Integer.parseInt(list.get(i + 4));
+                if (difficulty > 0) {
+                    desired_apps.add(mAllApps[i]);
+                }
+            } catch (NumberFormatException nfe) {
+                // not desired
+            }
+        }
+
+        boolean update;
+        try {
+            update = Integer.parseInt(list.get(4 + mAllApps.length)) == 1;
+        } catch (NumberFormatException nfe) {
+            update = false;
+        }
+
         PackageUtil packageUtil = new PackageUtil(mView.getContext());
-        for (TestApp app : mAllApps) {
-            if (!packageUtil.wouldSucceed(app.getPackageName())) {
-                Log.e(getClass().getCanonicalName(), "Not installed: " + app.getDisplayName());
+        PackageChecker packageChecker = new PackageChecker(update, packageUtil, this);
+        packageChecker.execute(desired_apps.toArray(new TestApp[desired_apps.size()]));
+    }
+
+    @Override
+    public void onCheckFinished(Map<TestApp, Integer> results) {
+        for (TestApp key : results.keySet()) {
+            if (results.get(key) == PackageChecker.INSTALL) {
+                Log.i(getClass().getCanonicalName(), key.getDisplayName() + ": INSTALL");
+            } else if (results.get(key) == PackageChecker.UPDATE) {
+                Log.i(getClass().getCanonicalName(), key.getDisplayName() + ": UPDATE");
+            } else {
+                Log.i(getClass().getCanonicalName(), key.getDisplayName() + ": ???");
             }
         }
 
