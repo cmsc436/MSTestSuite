@@ -26,8 +26,10 @@ import android.widget.Toast;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import edu.umd.cmsc436.frontendhelper.TrialMode;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
+import edu.umd.cmsc436.sheets.Sheets;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
@@ -192,9 +194,33 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void startPracticeMode(String packageName) throws ActivityNotFoundException {
-        Intent i = new Intent(packageName + ".action.PRACTICE");
+    public void startPracticeMode(String packageName, String patient_id) throws ActivityNotFoundException {
+        Intent i = new Intent(packageName + ".action.TRIAL");
         i.addCategory(Intent.CATEGORY_DEFAULT);
+
+        if (packageName.endsWith("tap")) {
+            i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.RH_TAP.ordinal());
+        } else if (packageName.endsWith("spiral")) {
+            i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.RH_SPIRAL.ordinal());
+        } else if (packageName.endsWith("balance")) {
+            i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.SWAY_CLOSED.ordinal());
+        } else if (packageName.endsWith("level")) {
+            i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.RH_LEVEL.ordinal());
+        } else if (packageName.endsWith("pop")) {
+            i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.RH_POP.ordinal());
+        } else if (packageName.endsWith("flex")) {
+            i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.RH_CURL.ordinal());
+        } else if (packageName.endsWith("walk.indoors")) {
+            i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.INDOOR_WALKING.ordinal());
+        } else if (packageName.endsWith("walk.outdoors")) {
+            i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.OUTDOOR_WALKING.ordinal());
+        }
+
+        i.putExtra(TrialMode.KEY_TRIAL_NUM, 1);
+        i.putExtra(TrialMode.KEY_TRIAL_OUT_OF, 3);
+        i.putExtra(TrialMode.KEY_DIFFICULTY, 1);
+        i.putExtra(TrialMode.KEY_PATIENT_ID, patient_id);
+
         startActivity(i);
     }
 

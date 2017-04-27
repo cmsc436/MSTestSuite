@@ -157,7 +157,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     @Override
     public void onAppSelected(TestApp app) {
         try {
-            mView.startPracticeMode(app.getPackageName());
+            mView.startPracticeMode(app.getPackageName(), mUserManager.getCurUserID());
         } catch (ActivityNotFoundException anfe) {
             mView.showToast(app.getDisplayName() + " not found");
         }

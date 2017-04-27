@@ -7,8 +7,8 @@
         <item>"edu.umd.cmsc436.level"</item>
         <item>"edu.umd.cmsc436.pop"</item>
         <item>"edu.umd.cmsc436.flex"</item>
-        <item>"edu.umd.cmsc436.walk.outdoors"</item>
         <item>"edu.umd.cmsc436.walk.indoors"</item>
+        <item>"edu.umd.cmsc436.walk.outdoors"</item>
     </array>
 
     <array name="display_names">

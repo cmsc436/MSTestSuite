@@ -19,7 +19,7 @@ interface MainContract {
         void hideBottomSheet ();
         void loadActions(ActionsAdapter adapter);
         void showToast (String message);
-        void startPracticeMode(String packageName) throws ActivityNotFoundException;
+        void startPracticeMode(String packageName, String patient_id) throws ActivityNotFoundException;
         Context getContext ();
         void showUserSwitcher (String[] users);
     }
