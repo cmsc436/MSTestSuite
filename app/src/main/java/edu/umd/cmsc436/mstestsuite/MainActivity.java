@@ -15,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -296,6 +297,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void notifyFinished(Exception e) {
-        // nothing for now
+        if (e != null) {
+            Log.e(getClass().getCanonicalName(), e.toString());
+        }
     }
 }

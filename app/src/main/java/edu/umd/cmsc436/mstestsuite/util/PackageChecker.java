@@ -13,10 +13,7 @@ import edu.umd.cmsc436.mstestsuite.data.TestApp;
  * Don't want to clog that UI thread do we now
  */
 
-public class PackageChecker extends AsyncTask<TestApp, Void, Map<TestApp, Integer>> {
-
-    public static int INSTALL = 0;
-    public static int UPDATE = 1;
+public class PackageChecker extends AsyncTask<TestApp, Void, Map<String, Float>> {
 
     private boolean should_update;
     private PackageUtil packageUtil;
@@ -29,16 +26,17 @@ public class PackageChecker extends AsyncTask<TestApp, Void, Map<TestApp, Intege
     }
 
     @Override
-    protected Map<TestApp, Integer> doInBackground(TestApp... params) {
-        Map<TestApp, Integer> results = new HashMap<>();
+    protected Map<String, Float> doInBackground(TestApp... params) {
+        Map<String, Float> results = new HashMap<>();
 
         for (TestApp app : params) {
+            String type = app.getPackageName().replaceFirst("edu\\.umd\\.cmsc436\\.", "");
             if (packageUtil.wouldSucceed(app)) {
                 if (should_update) {
-                    results.put(app, UPDATE);
+                    results.put(type, packageUtil.getVersion(app));
                 }
             } else {
-                results.put(app, INSTALL);
+                results.put(type, -1f);
             }
         }
 
@@ -46,13 +44,13 @@ public class PackageChecker extends AsyncTask<TestApp, Void, Map<TestApp, Intege
     }
 
     @Override
-    protected void onPostExecute(Map<TestApp, Integer> testAppIntegerMap) {
+    protected void onPostExecute(Map<String, Float> versionInfo) {
         if (listener != null) {
-            listener.onCheckFinished(testAppIntegerMap);
+            listener.onCheckFinished(versionInfo);
         }
     }
 
     public interface OnCheckFinishListener {
-        void onCheckFinished(Map<TestApp, Integer> results);
+        void onCheckFinished(Map<String, Float> versionMap);
     }
 }

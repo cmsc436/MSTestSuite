@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import edu.umd.cmsc436.mstestsuite.data.TestApp;
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
 import edu.umd.cmsc436.mstestsuite.util.PackageChecker;
 import edu.umd.cmsc436.mstestsuite.util.PackageUtil;
+import edu.umd.cmsc436.sheets.DriveApkTask;
 import edu.umd.cmsc436.sheets.Sheets;
 
 /**
@@ -212,18 +214,21 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     }
 
     @Override
-    public void onCheckFinished(Map<TestApp, Integer> results) {
-        for (TestApp key : results.keySet()) {
-            if (results.get(key) == PackageChecker.INSTALL) {
-                Log.i(getClass().getCanonicalName(), key.getDisplayName() + ": INSTALL");
-            } else if (results.get(key) == PackageChecker.UPDATE) {
-                Log.i(getClass().getCanonicalName(), key.getDisplayName() + ": UPDATE");
-            } else {
-                Log.i(getClass().getCanonicalName(), key.getDisplayName() + ": ???");
-            }
-        }
+    public void onCheckFinished(Map<String, Float> versionMap) {
+        mSheet.fetchApks(mView.getContext().getString(R.string.test_apk_folder_id), versionMap, new DriveApkTask.OnFinishListener() {
+            @Override
+            public void onFinish(List<File> list) {
+                for (File f : list) {
+                    Log.i(getClass().getCanonicalName(), "DOWNLOADED FILE: " + f.getAbsolutePath());
+                }
 
-        // eventually do:
-        mMainAdapter.setEnabled(0, true);
+                mView.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMainAdapter.setEnabled(0, true);
+                    }
+                });
+            }
+        });
     }
 }
