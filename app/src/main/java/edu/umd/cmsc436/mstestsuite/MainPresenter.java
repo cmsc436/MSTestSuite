@@ -219,7 +219,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
             @Override
             public void onFinish(List<File> list) {
                 for (File f : list) {
-                    Log.i(getClass().getCanonicalName(), "DOWNLOADED FILE: " + f.getAbsolutePath());
+                    Log.i(MainPresenter.class.getCanonicalName(), "DOWNLOADED FILE: " + f.getAbsolutePath());
                 }
 
                 mView.getActivity().runOnUiThread(new Runnable() {
