@@ -6,7 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
@@ -30,6 +31,7 @@ interface MainContract {
         void showUserSwitcher (String[] users);
         Sheets.Host getHost ();
         Activity getActivity ();
+        void installPackage (File f) throws IOException;
     }
 
     // things the presenter responds to
@@ -44,5 +46,6 @@ interface MainContract {
         void onUserCreated (String patient_id, UserManager.Handedness h, String dateOfBirth, UserManager.Gender gender);
         void onActivityResult(int requestCode, int resultCode, Intent data);
         void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
+        void onPackageInstalled ();
     }
 }

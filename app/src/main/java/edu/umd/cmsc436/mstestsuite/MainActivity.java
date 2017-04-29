@@ -1,14 +1,20 @@
 package edu.umd.cmsc436.mstestsuite;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,9 +31,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
@@ -44,6 +55,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     private MainContract.Presenter mPresenter;
 
+    private static final int REQUEST_CODE_INSTALL = 1001;
+    private static final int REQUEST_EXTERNAL_PERMISSION = 1002;
+
+    private File mInstallCache;
+
     @SuppressLint("ShowToast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
+        mInstallCache = null;
 
         mPeekButton = (Button) findViewById(R.id.peeked_begin_button);
         mPeekButton.setOnClickListener(new View.OnClickListener() {
@@ -252,12 +270,25 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPresenter.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_INSTALL) {
+            mPresenter.onPackageInstalled();
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_EXTERNAL_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (mInstallCache != null) {
+                try {
+                    installPackage(mInstallCache);
+                } catch (IOException e) {
+                    Log.e(getClass().getCanonicalName(), "install failed for " + mInstallCache.getAbsolutePath());
+                }
+            }
+        }
     }
 
     @Override
@@ -268,6 +299,42 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public Activity getActivity() {
         return this;
+    }
+
+    @Override
+    public void installPackage(File f) throws IOException {
+
+        FileChannel inChannel = new FileInputStream(f).getChannel();
+        File downloadsFolder = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+
+        if (downloadsFolder == null) {
+            throw new FileNotFoundException("downloads folder");
+        }
+
+        File outFile = new File(downloadsFolder, f.getName());
+        FileChannel outChannel = new FileOutputStream(outFile).getChannel();
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            mInstallCache = f;
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_PERMISSION);
+            return;
+        }
+
+
+        try {
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+        } finally {
+            if (inChannel != null) {
+                inChannel.close();
+            }
+
+            outChannel.close();
+        }
+
+        Intent i = new Intent(Intent.ACTION_VIEW)
+                .setDataAndType(Uri.parse("file://" + outFile.getAbsolutePath()), "application/vnd.android.package-archive");
+        startActivityForResult(i, REQUEST_CODE_INSTALL);
     }
 
     @Override

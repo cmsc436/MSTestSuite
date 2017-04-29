@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,8 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     private MainContract.View mView;
 
     private boolean isPractice;
+    private List<File> mToInstall;
+
     private UserManager mUserManager;
     private ActionsAdapter mMainAdapter;
     private ActionsAdapter mPracticeModeAdapter;
@@ -70,6 +73,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
         }
 
         mAllApps = loadAppInfo();
+        mToInstall = new ArrayList<>();
 
         mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
         mPracticeModeAdapter = new ActionsAdapter(mAllApps, mView.getContext().getString(R.string.practice_mode_header_text));
@@ -168,6 +172,17 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     }
 
     @Override
+    public void onPackageInstalled() {
+        // TODO install the rest
+        mView.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMainAdapter.setEnabled(0, true);
+            }
+        });
+    }
+
+    @Override
     public void onAppSelected(TestApp app) {
         try {
             mView.startPracticeMode(app.getPackageName());
@@ -222,12 +237,13 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                     Log.i(MainPresenter.class.getCanonicalName(), "DOWNLOADED FILE: " + f.getAbsolutePath());
                 }
 
-                mView.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMainAdapter.setEnabled(0, true);
-                    }
-                });
+                mToInstall = list;
+                File first = list.remove(0);
+                try {
+                    mView.installPackage(first);
+                } catch (IOException e) {
+                    Log.e(getClass().getCanonicalName(), "install failed for " + first.getAbsolutePath());
+                }
             }
         });
     }
