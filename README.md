@@ -18,6 +18,7 @@ The possible values in the curly braces are:
 - `flex`
 - `walk.outdoors`
 - `walk.indoors`
+- `symbol`
 
 For example, the intent to launch the Practice Mode of the Tap app would have the action `edu.umd.cmsc436.tap.action.PRACTICE`.
 
