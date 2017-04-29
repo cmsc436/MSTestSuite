@@ -174,12 +174,16 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     @Override
     public void onPackageInstalled() {
         // TODO install the rest
-        mView.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mMainAdapter.setEnabled(0, true);
-            }
-        });
+        if (mToInstall.size() > 0) {
+            installFirst();
+        } else {
+            mView.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mMainAdapter.setEnabled(0, true);
+                }
+            });
+        }
     }
 
     @Override
@@ -238,13 +242,17 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                 }
 
                 mToInstall = list;
-                File first = list.remove(0);
-                try {
-                    mView.installPackage(first);
-                } catch (IOException e) {
-                    Log.e(getClass().getCanonicalName(), "install failed for " + first.getAbsolutePath());
-                }
+                installFirst();
             }
         });
+    }
+
+    private void installFirst() {
+        File first = mToInstall.remove(0);
+        try {
+            mView.installPackage(first);
+        } catch (IOException e) {
+            Log.e(getClass().getCanonicalName(), "install failed for " + first.getAbsolutePath());
+        }
     }
 }
