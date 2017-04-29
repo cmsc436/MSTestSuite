@@ -214,6 +214,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.INDOOR_WALKING.ordinal());
         } else if (packageName.endsWith("walk.outdoors")) {
             i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.OUTDOOR_WALKING.ordinal());
+        } else if (packageName.endsWith("symbol")) {
+            i.putExtra(TrialMode.KEY_APPENDAGE, Sheets.TestType.RH_TAP); // TODO update with Sheets lib
         }
 
         i.putExtra(TrialMode.KEY_TRIAL_NUM, 1);
