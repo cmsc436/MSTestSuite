@@ -60,7 +60,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     private ActionsAdapter mPracticeModeAdapter;
     private Sheets mSheet;
     private TestApp[] mAllApps;
-    private ArrayList<TestApp> desired_apps;
+    private ArrayList<TestApp> mDesiredApps;
 
     MainPresenter(MainContract.View v) {
         mView = v;
@@ -200,12 +200,12 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
             return;
         }
 
-        desired_apps = new ArrayList<>();
+        mDesiredApps = new ArrayList<>();
         for (int i = 0; i < mAllApps.length; i++) {
             try {
                 int difficulty = Integer.parseInt(list.get(i + 4));
                 if (difficulty > 0) {
-                    desired_apps.add(mAllApps[i]);
+                    mDesiredApps.add(mAllApps[i]);
                 }
             } catch (NumberFormatException nfe) {
                 // not desired
@@ -221,7 +221,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
         PackageUtil packageUtil = new PackageUtil(mView.getContext());
         PackageChecker packageChecker = new PackageChecker(update, packageUtil, this);
-        packageChecker.execute(desired_apps.toArray(new TestApp[desired_apps.size()]));
+        packageChecker.execute(mDesiredApps.toArray(new TestApp[mDesiredApps.size()]));
     }
 
     @Override
@@ -259,11 +259,30 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     }
 
     private void postInstall () {
-        mView.getActivity().runOnUiThread(new Runnable() {
+        PackageUtil packageUtil = new PackageUtil(mView.getContext());
+        PackageChecker packageChecker = new PackageChecker(true, packageUtil, new PackageChecker.OnCheckFinishListener() {
             @Override
-            public void run() {
-                mMainAdapter.setEnabled(0, true);
+            public void onCheckFinished(Map<String, Float> versionMap) {
+
+                List<TestApp> toShow = new ArrayList<>();
+                for (TestApp app : mDesiredApps) {
+                    String type = app.getPackageName().replaceFirst("edu\\.umd\\.cmsc436\\.", "");
+                    if (versionMap.containsKey(type) && versionMap.get(type) > 0f) {
+                        // well we have an app I suppose
+                        toShow.add(app);
+                    }
+                }
+
+                mPracticeModeAdapter = new ActionsAdapter(toShow.toArray(new Action[toShow.size()]), mView.getContext().getString(R.string.practice_mode_header_text));
+
+                mView.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMainAdapter.setEnabled(0, true);
+                    }
+                });
             }
         });
+        packageChecker.execute(mDesiredApps.toArray(new TestApp[mDesiredApps.size()]));
     }
 }
