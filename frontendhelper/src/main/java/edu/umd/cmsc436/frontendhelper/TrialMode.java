@@ -16,6 +16,7 @@ public class TrialMode {
     public static final String KEY_TRIAL_OUT_OF = "trial out of";
     public static final String KEY_PATIENT_ID = "patient id";
     public static final String KEY_SCORE = "score";
+    public static final String KEY_DIFFICULTY = "difficulty";
 
     /**
      * Extract the Test Type from the intent
@@ -67,6 +68,15 @@ public class TrialMode {
     @Nullable
     public static String getPatientId (Intent i) {
         return i.getStringExtra(KEY_PATIENT_ID);
+    }
+
+    /**
+     * Gets the difficulty for this trial fromt he frontend intent
+     * @param i intent from the frontend, with .TRIAL action
+     * @return the difficulty, greater than 0 or -1 if not found
+     */
+    public static int getDifficulty (Intent i) {
+        return i.getIntExtra(KEY_DIFFICULTY, -1);
     }
 
     /**

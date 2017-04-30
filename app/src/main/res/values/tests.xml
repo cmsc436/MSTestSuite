@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="package_names">
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
-        <item>"edu.umd.cmsc436.mstestsuite"</item>
+    <array name="test_prefixes">
+        <item>"edu.umd.cmsc436.tap"</item>
+        <item>"edu.umd.cmsc436.spiral"</item>
+        <item>"edu.umd.cmsc436.balance"</item>
+        <item>"edu.umd.cmsc436.level"</item>
+        <item>"edu.umd.cmsc436.pop"</item>
+        <item>"edu.umd.cmsc436.flex"</item>
+        <item>"edu.umd.cmsc436.walk.outdoors"</item>
+        <item>"edu.umd.cmsc436.walk.indoors"</item>
+        <item>"edu.umd.cmsc436.symbol</item>
     </array>
 
     <array name="display_names">
@@ -24,25 +21,19 @@
         <item>"Flex"</item>
         <item>"Walk Indoors"</item>
         <item>"Walk Outdoors"</item>
-        <item>"Test 9"</item>
-        <item>"Test 10"</item>
-        <item>"Test 11"</item>
-        <item>"Test 12"</item>
+        <item>"Symbol"</item>
     </array>
 
     <array name="icons">
         <item>@drawable/ic_hand_final</item>
         <item>@drawable/ic_spiral</item>
         <item>@drawable/ic_balance</item>
-        <item>@drawable/ic_level_1</item>
+        <item>@drawable/ic_level</item>
         <item>@drawable/ic_pop</item>
         <item>@drawable/ic_flex</item>
         <item>@drawable/ic_walking_inside</item>
         <item>@drawable/ic_walking_outside</item>
-        <item>@mipmap/ic_launcher</item>
-        <item>@mipmap/ic_launcher_round</item>
-        <item>@mipmap/ic_launcher</item>
-        <item>@mipmap/ic_launcher_round</item>
+        <item>@drawable/ic_symbol</item>
     </array>
 
     <!-- TODO: Add an array for supported appendages, with each <item> as a <string-array> -->
