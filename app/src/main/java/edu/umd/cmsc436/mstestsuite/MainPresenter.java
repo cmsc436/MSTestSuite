@@ -11,6 +11,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,13 +53,14 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     private MainContract.View mView;
 
     private boolean isPractice;
-    private List<File> mToInstall;
+    private Map<File, Float> mToInstall;
 
     private UserManager mUserManager;
     private ActionsAdapter mMainAdapter;
     private ActionsAdapter mPracticeModeAdapter;
     private Sheets mSheet;
     private TestApp[] mAllApps;
+    private ArrayList<TestApp> desired_apps;
 
     MainPresenter(MainContract.View v) {
         mView = v;
@@ -73,7 +75,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
         }
 
         mAllApps = loadAppInfo();
-        mToInstall = new ArrayList<>();
+        mToInstall = new HashMap<>();
 
         mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
         mPracticeModeAdapter = new ActionsAdapter(mAllApps, mView.getContext().getString(R.string.practice_mode_header_text));
@@ -173,17 +175,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
     @Override
     public void onPackageInstalled() {
-        // TODO install the rest
-        if (mToInstall.size() > 0) {
-            installFirst();
-        } else {
-            mView.getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mMainAdapter.setEnabled(0, true);
-                }
-            });
-        }
+        installFirst();
     }
 
     @Override
@@ -208,7 +200,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
             return;
         }
 
-        ArrayList<TestApp> desired_apps = new ArrayList<>();
+        desired_apps = new ArrayList<>();
         for (int i = 0; i < mAllApps.length; i++) {
             try {
                 int difficulty = Integer.parseInt(list.get(i + 4));
@@ -235,24 +227,43 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     @Override
     public void onCheckFinished(Map<String, Float> versionMap) {
         mSheet.fetchApks(mView.getContext().getString(R.string.test_apk_folder_id), versionMap, new DriveApkTask.OnFinishListener() {
+
             @Override
-            public void onFinish(List<File> list) {
-                for (File f : list) {
+            public void onFinish(Map<File, Float> map) {
+                for (File f : map.keySet()) {
                     Log.i(MainPresenter.class.getCanonicalName(), "DOWNLOADED FILE: " + f.getAbsolutePath());
                 }
 
-                mToInstall = list;
+                mToInstall = map;
                 installFirst();
             }
         });
     }
 
     private void installFirst() {
-        File first = mToInstall.remove(0);
+
+        if (mToInstall.size() == 0) {
+            postInstall();
+            return;
+        }
+
+        File first = mToInstall.keySet().iterator().next();
+        float version = mToInstall.remove(first);
         try {
+            PackageUtil packageUtil = new PackageUtil(mView.getContext());
+            packageUtil.setVersion("edu.umd.cmsc436." + first.getName().substring(0, first.getName().indexOf('-')), version);
             mView.installPackage(first);
         } catch (IOException e) {
             Log.e(getClass().getCanonicalName(), "install failed for " + first.getAbsolutePath());
         }
+    }
+
+    private void postInstall () {
+        mView.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMainAdapter.setEnabled(0, true);
+            }
+        });
     }
 }

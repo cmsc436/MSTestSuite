@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
 
@@ -41,9 +42,10 @@ public class PackageUtil {
         return mVersionPrefs.getFloat(app.getPackageName(), 0f);
     }
 
-    public void setVersion (TestApp app, float version) {
+    public void setVersion (String typeAndDomain, float version) {
+        Log.i(getClass().getCanonicalName(), "Updating " + typeAndDomain + " to version " + version);
         mVersionPrefs.edit()
-                .putFloat(app.getPackageName(), version)
+                .putFloat(typeAndDomain, version)
                 .apply();
     }
 }
