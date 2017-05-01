@@ -64,7 +64,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     private ActionsAdapter mPracticeModeAdapter;
     private Sheets mSheet;
     private TestApp[] mAllApps;
-    private float[] mAllDifficulties;
+    private int[] mAllDifficulties;
     private int mNumTrials;
     private ArrayList<TestApp> mDesiredApps;
 
@@ -190,7 +190,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
         }
 
         mDesiredApps = new ArrayList<>();
-        mAllDifficulties = new float[mAllApps.length];
+        mAllDifficulties = new int[mAllApps.length];
         for (int i = 0; i < mAllApps.length; i++) {
             try {
                 int difficulty = Integer.parseInt(list.get(i + 4));
