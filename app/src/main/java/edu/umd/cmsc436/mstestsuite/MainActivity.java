@@ -24,8 +24,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -268,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     i.addCategory(Intent.CATEGORY_DEFAULT);
                     startActivity(i);
                 } catch(ActivityNotFoundException e) {
-                    showToast(e.toString());
+                    showToast(app_array[position] + " not found");
                 }
             }
         });
