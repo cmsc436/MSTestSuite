@@ -10,5 +10,6 @@
     <string name="new_patient_id_hint_text">New patient ID</string>
     <string name="create_user_button_text">Create</string>
     <string name="main_actions_header">Welcome, %s</string>
-    <string name="enter_text_here">Enter text here:</string>
+    <string name="enter_text_here">Type feedback below:</string>
+    <string name="title_activity_feedback">Feedback</string>
 </resources>

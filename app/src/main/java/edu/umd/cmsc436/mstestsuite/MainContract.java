@@ -22,10 +22,7 @@ interface MainContract {
         void startPracticeMode(String packageName) throws ActivityNotFoundException;
         Context getContext ();
         void showUserSwitcher (String[] users);
-<<<<<<< HEAD
         void sendFeedbackToDoc();
-=======
->>>>>>> upstream/master
         void showHistoryDialog (String user);
     }
 
@@ -35,7 +32,7 @@ interface MainContract {
         void onCloseBottomSheet ();
         void onBottomSheetSlide ();
         void onBottomSheetStateChange (int newState);
-        void onBackPressed ();
+        boolean onBackPressed ();
         void onDestroy ();
         void onUserSelected (String patient_id);
         void onUserCreated (String patient_id, UserManager.Handedness h, String dateOfBirth, UserManager.Gender gender);

@@ -130,13 +130,13 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean onBackPressed() {
         if (isPractice) {
             isPractice = false;
             mView.loadActions(mMainAdapter);
-            //return false;
+            return false;
         } else {
-            //return true;
+            return true;
         }
     }
 

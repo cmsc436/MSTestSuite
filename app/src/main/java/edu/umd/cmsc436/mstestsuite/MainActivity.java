@@ -185,22 +185,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         });
     }
 
+    @Override
     public void sendFeedbackToDoc() {
-        setContentView(R.layout.feedback);
-        Button mButton = (Button) findViewById(R.id.send_email_btn);
-        final EditText mEditText = (EditText) findViewById(R.id.feedback_edit_text);
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"lisamaszkiewicz@gmail.com"});
-                i.putExtra(Intent.EXTRA_SUBJECT, "What should this be?");
-                i.putExtra(Intent.EXTRA_TEXT, mEditText.getText());
-                i.setType("message/rfc822");
-                startActivity(Intent.createChooser(i, "Choose an Email client :"));
-            }
-        });
+        Intent intent = new Intent(this, FeedbackActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -294,8 +282,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void onBackPressed() {
-        //if (mPresenter.onBackPressed()) {
+        if (mPresenter.onBackPressed()) {
             super.onBackPressed();
-        //}
+        }
     }
 }
