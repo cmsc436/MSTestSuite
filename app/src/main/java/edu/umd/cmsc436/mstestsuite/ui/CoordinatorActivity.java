@@ -4,8 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 import edu.umd.cmsc436.mstestsuite.R;
+import edu.umd.cmsc436.mstestsuite.data.TestApp;
+import edu.umd.cmsc436.mstestsuite.util.PackageUtil;
 
 public class CoordinatorActivity extends AppCompatActivity {
 
@@ -23,6 +28,8 @@ public class CoordinatorActivity extends AppCompatActivity {
 
     private String mCurPatient;
     private int mNumTrials;
+    private TestApp[] mDailyApps;
+    private Float[] mDailyDifficulties;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,26 @@ public class CoordinatorActivity extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             mCurPatient = extras.getString(KEY_PID, "default patient");
             mNumTrials = extras.getInt(KEY_N_TRIALS);
+
+            float[] difficulties = extras.getFloatArray(KEY_DIFFICULTIES);
+            TestApp[] allApps = PackageUtil.loadAppInfo(this, null);
+            if (difficulties == null || difficulties.length != allApps.length) {
+                Log.e(getClass().getCanonicalName(), "lengths do not match");
+                finish();
+                return;
+            }
+
+            ArrayList<TestApp> filteredApps = new ArrayList<>();
+            ArrayList<Float> filteredDifficulties = new ArrayList<>();
+            for (int i = 0; i < difficulties.length; i++) {
+                if (difficulties[i] > 0) {
+                    filteredApps.add(allApps[i]);
+                    filteredDifficulties.add(difficulties[i]);
+                }
+            }
+
+            mDailyApps = filteredApps.toArray(new TestApp[filteredApps.size()]);
+            mDailyDifficulties = filteredDifficulties.toArray(new Float[filteredDifficulties.size()]);
         } else {
             finish();
         }

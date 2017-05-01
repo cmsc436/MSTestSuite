@@ -99,6 +99,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             }
         });
 
+        findViewById(R.id.expanded_daily_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.onDailyStart();
+            }
+        });
+
         mBottomSheet = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
         mBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
