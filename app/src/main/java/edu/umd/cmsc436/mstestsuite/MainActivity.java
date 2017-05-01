@@ -14,8 +14,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -254,24 +254,22 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         View root = dialog.getLayoutInflater().inflate(R.layout.history_chooser, null, false);
 
-        TextView title = new TextView(getContext());
-        title.setText("Show score history for: ");
-        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-
         ListView lv = (ListView) root.findViewById(R.id.app_history_listview);
-        lv.addHeaderView(title);
 
         lv.setAdapter(new ArrayAdapter<>(this, R.layout.plain_list_item, R.id.listview_item_textview, app_array));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
-                String app_name = "edu.umd.cmsc436." + app_array[position-1];
-
-                Intent i = new Intent(app_name + ".action.HISTORY");
-                i.putExtra("user", user);
-                i.addCategory(Intent.CATEGORY_DEFAULT);
-                startActivity(i);
+                String app_name = "edu.umd.cmsc436." + app_array[position];
+                try {
+                    Intent i = new Intent(app_name + ".action.HISTORY");
+                    i.putExtra("user", user);
+                    i.addCategory(Intent.CATEGORY_DEFAULT);
+                    startActivity(i);
+                } catch(ActivityNotFoundException e) {
+                    showToast(e.toString());
+                }
             }
         });
 
