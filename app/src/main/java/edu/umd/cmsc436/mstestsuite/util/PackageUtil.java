@@ -32,11 +32,18 @@ public class PackageUtil {
         TypedArray package_names = res.obtainTypedArray(R.array.test_prefixes);
         TypedArray display_names = res.obtainTypedArray(R.array.display_names);
         TypedArray icons = res.obtainTypedArray(R.array.icons);
+        TypedArray supportedAppendages = res.obtainTypedArray(R.array.supported_appendages);
 
         TestApp[] apps = new TestApp[package_names.length()];
-        if (package_names.length() == display_names.length() && display_names.length() == icons.length()) {
+        if (package_names.length() == display_names.length() && display_names.length() == icons.length() && icons.length() == supportedAppendages.length()) {
             for (int i = 0; i < package_names.length(); i++) {
-                apps[i] = new TestApp(package_names.getString(i), display_names.getString(i), icons.getResourceId(i, R.mipmap.ic_launcher), callback);
+                apps[i] = new TestApp(
+                        package_names.getString(i),
+                        display_names.getString(i),
+                        icons.getResourceId(i, R.mipmap.ic_launcher),
+                        res.getTextArray(supportedAppendages.getResourceId(i, 0)),
+                        callback
+                );
             }
         } else {
             Log.e(PackageUtil.class.getCanonicalName(), "XML resource arrays not same length");
@@ -46,6 +53,7 @@ public class PackageUtil {
         package_names.recycle();
         display_names.recycle();
         icons.recycle();
+        supportedAppendages.recycle();
 
         return apps;
     }

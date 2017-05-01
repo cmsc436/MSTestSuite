@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import edu.umd.cmsc436.mstestsuite.R;
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
@@ -62,6 +63,10 @@ public class CoordinatorActivity extends AppCompatActivity {
 
             mDailyApps = filteredApps.toArray(new TestApp[filteredApps.size()]);
             mDailyDifficulties = filteredDifficulties.toArray(new Float[filteredDifficulties.size()]);
+
+            for (TestApp app : mDailyApps) {
+                Log.i("TAG", "supported appendages for " + app.getDisplayName() + ": " + Arrays.toString(app.getSupportedAppendages()));
+            }
         } else {
             finish();
         }
