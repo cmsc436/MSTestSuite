@@ -26,7 +26,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -41,7 +40,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
-import edu.umd.cmsc436.mstestsuite.model.UserManager;
 import edu.umd.cmsc436.sheets.Sheets;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, Sheets.Host {
@@ -268,6 +266,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         final Dialog dialog = new AppCompatDialog(this);
         final String [] app_array = getResources().getStringArray(R.array.display_names);
 
+        @SuppressLint("InflateParams")
         View root = dialog.getLayoutInflater().inflate(R.layout.history_chooser, null, false);
 
         ListView lv = (ListView) root.findViewById(R.id.app_history_listview);
@@ -328,6 +327,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         return this;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void installPackage(File f) throws IOException {
 
@@ -339,6 +339,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         }
 
         File outFile = new File(downloadsFolder, f.getName());
+        outFile.setReadable(true);
+        outFile.setWritable(true);
         FileChannel outChannel = new FileOutputStream(outFile).getChannel();
 
 
