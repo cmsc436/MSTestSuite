@@ -2,7 +2,27 @@
 <resources>
     <color name="colorPrimary">#F0163A</color>
     <color name="colorPrimaryDark">#CC1231</color>
-    <color name="colorAccent">#FFD90f</color>
+    <color name="colorAccent">#FFD90F</color>
     <color name="grayBackground">#9e9e9e</color>
 
+    <color name="textBlack">#E3F2FD</color>
+
+    <color name="dotDarkScreen">#0D47A1</color>
+    <color name="dotLightScreen">#90CAF9</color>
+    <color name="dotDarkScreen2">#0D47A1</color>
+    <color name="dotLightScreen2">#90CAF9</color>
+    <color name="dotDarkScreen3">#0D47A1</color>
+    <color name="dotLightScreen3">#90CAF9</color>
+
+    <array name="dotActive">
+        <item>@color/dotLightScreen</item>
+        <item>@color/dotLightScreen2</item>
+        <item>@color/dotLightScreen3</item>
+    </array>
+
+    <array name="dotInactive">
+        <item>@color/dotDarkScreen</item>
+        <item>@color/dotDarkScreen2</item>
+        <item>@color/dotDarkScreen3</item>
+    </array>
 </resources>
