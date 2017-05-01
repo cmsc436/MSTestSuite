@@ -3,17 +3,16 @@ package edu.umd.cmsc436.mstestsuite;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -82,7 +81,7 @@ public class IntroActivity extends AppCompatActivity {
                 }
             }
         });
-
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, android.R.color.white));
     }
 
     private void startMainActivity() {
