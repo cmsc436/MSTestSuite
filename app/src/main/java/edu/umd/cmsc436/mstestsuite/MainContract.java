@@ -23,6 +23,7 @@ interface MainContract {
         Context getContext ();
         void showUserSwitcher (String[] users);
         void sendFeedbackToDoc();
+        void showHistoryDialog (String user);
     }
 
     // things the presenter responds to

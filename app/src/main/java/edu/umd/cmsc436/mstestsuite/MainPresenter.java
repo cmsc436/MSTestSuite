@@ -36,11 +36,16 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
                 }
             }),
             new Action("Help", R.drawable.ic_help, null),
-            new Action("History", R.drawable.ic_history, null),
             new Action("Feedback", R.drawable.ic_feedback, new Runnable() {
                 @Override
                 public void run() {
                     mView.sendFeedbackToDoc();
+                }
+            }),
+            new Action("History", R.drawable.ic_history, new Runnable() {
+                @Override
+                public void run() {
+                    mView.showHistoryDialog(mUserManager.getCurUserID());
                 }
             }),
     };
