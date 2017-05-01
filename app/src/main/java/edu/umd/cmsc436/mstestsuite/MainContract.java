@@ -22,7 +22,10 @@ interface MainContract {
         void startPracticeMode(String packageName) throws ActivityNotFoundException;
         Context getContext ();
         void showUserSwitcher (String[] users);
+<<<<<<< HEAD
         void sendFeedbackToDoc();
+=======
+>>>>>>> upstream/master
         void showHistoryDialog (String user);
     }
 
