@@ -17,7 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.CoordinatorActivity">
+        <activity
+            android:name=".ui.CoordinatorActivity"
+            android:theme="@style/AppTheme.Fullscreen">
         </activity>
 
         <activity android:name=".MainActivity"/>
