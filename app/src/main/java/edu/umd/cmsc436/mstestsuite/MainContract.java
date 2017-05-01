@@ -22,6 +22,7 @@ interface MainContract {
         void startPracticeMode(String packageName) throws ActivityNotFoundException;
         Context getContext ();
         void showUserSwitcher (String[] users);
+        void sendFeedbackToDoc();
     }
 
     // things the presenter responds to
@@ -30,7 +31,7 @@ interface MainContract {
         void onCloseBottomSheet ();
         void onBottomSheetSlide ();
         void onBottomSheetStateChange (int newState);
-        boolean onBackPressed ();
+        void onBackPressed ();
         void onDestroy ();
         void onUserSelected (String patient_id);
         void onUserCreated (String patient_id, UserManager.Handedness h, String dateOfBirth, UserManager.Gender gender);

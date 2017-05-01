@@ -1,13 +1,17 @@
 package edu.umd.cmsc436.mstestsuite;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import edu.umd.cmsc436.mstestsuite.data.Action;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
@@ -19,7 +23,7 @@ import edu.umd.cmsc436.mstestsuite.model.UserManager;
  * Do the logic of things without worrying about the view
  */
 
-class MainPresenter implements MainContract.Presenter, TestApp.Events {
+class MainPresenter extends Activity implements MainContract.Presenter, TestApp.Events {
 
     private final Action[] actions = new Action[] {
             new Action("Practice", R.drawable.ic_practice_mode, new Runnable() {
@@ -37,7 +41,12 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
             }),
             new Action("Help", R.drawable.ic_help, null),
             new Action("History", R.drawable.ic_history, null),
-            new Action("Feedback", R.drawable.ic_feedback, null),
+            new Action("Feedback", R.drawable.ic_feedback, new Runnable() {
+                @Override
+                public void run() {
+                    mView.sendFeedbackToDoc();
+                }
+            }),
     };
 
     private MainContract.View mView;
@@ -119,19 +128,20 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events {
         // nothing
     }
 
-    @Override
-    public boolean onBackPressed() {
+    //@Override
+    public void onBackPressed() {
         if (isPractice) {
             isPractice = false;
             mView.loadActions(mMainAdapter);
-            return false;
+            //return false;
         } else {
-            return true;
+            //return true;
         }
     }
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         LocalBroadcastManager.getInstance(mView.getContext()).unregisterReceiver(mLocalReceiver);
     }
 
