@@ -8,6 +8,7 @@ There are three intent actions (in the category `android.intent.category.DEFAULT
 - `edu.umd.cmsc436.{...}.action.TRIAL`
 - `edu.umd.cmsc436.{...}.action.PRACTICE`
 - `edu.umd.cmsc436.{...}.action.HELP`
+- `edu.umd.cmsc436.{...}.action.HISTORY`
 
 The possible values in the curly braces are:
 - `tap`
@@ -23,6 +24,9 @@ The possible values in the curly braces are:
 For example, the intent to launch the Practice Mode of the Tap app would have the action `edu.umd.cmsc436.tap.action.PRACTICE`.
 
 `.PRACTICE` and `.HELP` don't have any arguments or expect any results.  Practice mode itself is relatively unstructured, and should let the patient practice as long as they want before exiting.  Help mode should display instructions or a guide to using the specific test, and then switch to Practice mode.
+
+`.HISTORY` has 1 argument:
+- user, which is a string of the current user's id
 
 `.TRIAL` has 5 arguments:
 - Appendage, which is a `Sheets.TestType` (from the [sheets436](https://github.com/cmsc436/sheets436) library)

@@ -14,6 +14,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
@@ -220,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         final EditText et = (EditText) root.findViewById(R.id.new_user_edittext);
         Button btn = (Button) root.findViewById(R.id.new_user_create_button);
 
-        lv.setAdapter(new ArrayAdapter<>(this, R.layout.user_switcher_item, R.id.listview_item_textview, users));
+        lv.setAdapter(new ArrayAdapter<>(this, R.layout.plain_list_item, R.id.listview_item_textview, users));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -237,6 +240,38 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     dialog.dismiss();
                     mPresenter.onUserCreated(user, UserManager.Handedness.RIGHT, "1/1/1970", UserManager.Gender.MALE);
                 }
+            }
+        });
+
+        dialog.setContentView(root);
+        dialog.show();
+    }
+
+    @Override
+    public void showHistoryDialog(final String user) {
+        final Dialog dialog = new AppCompatDialog(this);
+        final String [] app_array = getResources().getStringArray(R.array.display_names);
+
+        View root = dialog.getLayoutInflater().inflate(R.layout.history_chooser, null, false);
+
+        TextView title = new TextView(getContext());
+        title.setText("Show score history for: ");
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+
+        ListView lv = (ListView) root.findViewById(R.id.app_history_listview);
+        lv.addHeaderView(title);
+
+        lv.setAdapter(new ArrayAdapter<>(this, R.layout.plain_list_item, R.id.listview_item_textview, app_array));
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dialog.dismiss();
+                String app_name = "edu.umd.cmsc436." + app_array[position-1];
+
+                Intent i = new Intent(app_name + ".action.HISTORY");
+                i.putExtra("user", user);
+                i.addCategory(Intent.CATEGORY_DEFAULT);
+                startActivity(i);
             }
         });
 
