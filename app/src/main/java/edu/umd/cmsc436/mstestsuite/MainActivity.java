@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.feedback);
         Button mButton = (Button) findViewById(R.id.send_email_btn);
         final EditText mEditText = (EditText) findViewById(R.id.feedback_edit_text);
+
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,11 +198,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 i.putExtra(Intent.EXTRA_SUBJECT, "What should this be?");
                 i.putExtra(Intent.EXTRA_TEXT, mEditText.getText());
                 i.setType("message/rfc822");
-                try {
-                    startActivity(Intent.createChooser(i, "Choose an Email client :"));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-                }
+                startActivity(Intent.createChooser(i, "Choose an Email client :"));
             }
         });
     }
@@ -268,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onBackPressed() {
         //if (mPresenter.onBackPressed()) {
-          //  super.onBackPressed();
+            super.onBackPressed();
         //}
     }
 }

@@ -1,17 +1,13 @@
 package edu.umd.cmsc436.mstestsuite;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import edu.umd.cmsc436.mstestsuite.data.Action;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
@@ -23,7 +19,7 @@ import edu.umd.cmsc436.mstestsuite.model.UserManager;
  * Do the logic of things without worrying about the view
  */
 
-class MainPresenter extends Activity implements MainContract.Presenter, TestApp.Events {
+class MainPresenter implements MainContract.Presenter, TestApp.Events {
 
     private final Action[] actions = new Action[] {
             new Action("Practice", R.drawable.ic_practice_mode, new Runnable() {
@@ -128,7 +124,7 @@ class MainPresenter extends Activity implements MainContract.Presenter, TestApp.
         // nothing
     }
 
-    //@Override
+    @Override
     public void onBackPressed() {
         if (isPractice) {
             isPractice = false;
@@ -141,7 +137,6 @@ class MainPresenter extends Activity implements MainContract.Presenter, TestApp.
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         LocalBroadcastManager.getInstance(mView.getContext()).unregisterReceiver(mLocalReceiver);
     }
 
