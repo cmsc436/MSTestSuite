@@ -5,9 +5,7 @@
     <color name="colorAccent">#FFD90F</color>
     <color name="grayBackground">#9e9e9e</color>
 
-    <color name="screen1">#E3F2FD</color>
-    <color name="screen2">#E3F2FD</color>
-    <color name="screen3">#E3F2FD</color>
+    <color name="textBlack">#E3F2FD</color>
 
     <color name="dotDarkScreen">#0D47A1</color>
     <color name="dotLightScreen">#90CAF9</color>

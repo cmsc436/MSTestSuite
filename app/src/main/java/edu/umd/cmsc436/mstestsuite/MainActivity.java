@@ -217,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         @SuppressLint("InflateParams") // it's fine I swear
         View root = dialog.getLayoutInflater().inflate(R.layout.user_switcher, null, false);
         ListView lv = (ListView) root.findViewById(R.id.users_listview);
-        final EditText et = (EditText) root.findViewById(R.id.new_user_edittext);
         Button btn = (Button) root.findViewById(R.id.new_user_create_button);
 
         lv.setAdapter(new ArrayAdapter<>(this, R.layout.user_switcher_item, R.id.listview_item_textview, users));
@@ -232,11 +231,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String user = et.getText().toString();
-                if (user.length() > 0) {
-                    dialog.dismiss();
-                    mPresenter.onUserCreated(user, UserManager.Handedness.RIGHT, "1/1/1970", UserManager.Gender.MALE);
-                }
+                Intent i = new Intent(MainActivity.this, IntroActivity.class);
+                startActivity(i);
+                finish();
             }
         });
 

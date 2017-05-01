@@ -18,20 +18,13 @@
         \n\n You also are able to track your progress among each test. </string>
     <string name="introscreen_continue">ENTER</string>
     <string name="introscreen_next_text">NEXT</string>
-    <string name="welcome">Welcome to Test Suite</string>
+    <string name="welcome">Welcome to the Test Suite</string>
     <string name="intro_title">Test Suite</string>
     <string name="patient_id">Patient ID:</string>
     <string name="enter_patient_id">Enter Patient ID</string>
     <string name="dob">Date of Birth(mm/dd/yyyy):</string>
     <string name="gender">Gender</string>
     <string name="handedness">Handedness:</string>
-    <string name="test_recyclerview_header">Practice Mode</string>
-
-    <string name="tap_start_text">Tap to start</string>
-    <string name="tap_seconds_remaining_text">%d seconds remaining</string>
-    <string name="tap_button_countdown_text">Beginning tapping in %d</string>
-    <string name="tap_button_text">TAP</string>
-    <string name="tap_report_text">Number of taps: %d</string>
 
     <string-array name="handedness_array">
         <item>RIGHT</item>

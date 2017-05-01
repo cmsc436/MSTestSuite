@@ -13,12 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Set;
 
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
 
@@ -35,9 +39,11 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Set<String> categories = getIntent().getCategories();
         mUserManager = new UserManager(this.getApplicationContext());
-        if (mUserManager.getCurUserID() != null) {
-            Log.i("Login", "There was a user");
+        if (mUserManager.getCurUserID() != null
+                && categories != null
+                    && categories.contains(Intent.CATEGORY_LAUNCHER)) {
             startMainActivity();
         }
         setContentView(R.layout.activity_intro);
@@ -54,7 +60,7 @@ public class IntroActivity extends AppCompatActivity {
         viewPager = (ViewPager)findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout)findViewById(R.id.layoutDots);
         next = (Button)findViewById(R.id.btn_next);
-        layouts = new int[]{R.layout.activity_intro_1, R.layout.activity_intro_2, R.layout.activity_intro_3};
+        layouts = new int[]{R.layout.activity_intro_1, R.layout.activity_intro_2};
         addBottomDots(0);
         viewPagerAdapter = new ViewPagerAdapter();
         viewPager.setAdapter(viewPagerAdapter);
@@ -63,12 +69,16 @@ public class IntroActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int current = getItem(+1);
+                int current = getItem(1);
                 if (current<layouts.length) {
                     viewPager.setCurrentItem(current);
                 } else {
-                    saveUser();
-                    startMainActivity();
+                    if(saveUser()){
+                        startMainActivity();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "User information not entered correctly",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -109,15 +119,24 @@ public class IntroActivity extends AppCompatActivity {
         }
     }
 
-    private void saveUser(){
+    private boolean saveUser(){
         EditText name = (EditText) findViewById(R.id.patient_id_box);
         EditText dob = (EditText) findViewById(R.id.dob);
         Spinner handSpin = (Spinner) findViewById(R.id.handedness_spinner);
         Spinner genderSpin = (Spinner) findViewById(R.id.gender_spinner);
-        Log.i("Log", "USER Added");
-        UserManager.initWithUser(getApplicationContext(), name.getText().toString(),
-                UserManager.Handedness.valueOf(handSpin.getSelectedItem().toString()),
-                dob.getText().toString(), UserManager.Gender.valueOf(genderSpin.getSelectedItem().toString()));
+        String nameText = name.getText().toString();
+        String dobText = dob.getText().toString();
+        UserManager.Handedness hand = UserManager.Handedness.valueOf(handSpin.getSelectedItem().toString());
+        UserManager.Gender gender = UserManager.Gender.valueOf(genderSpin.getSelectedItem().toString());
+        if(!nameText.isEmpty() && !dobText.isEmpty()) {
+            if (mUserManager.getAllUsers().size() == 0) {
+                UserManager.initWithUser(getApplicationContext(), nameText, hand, dobText, gender);
+            } else {
+                mUserManager.onUserCreated(nameText, hand, dobText, gender);
+            }
+            return true;
+        }
+        return false;
     }
 
     private int getItem(int i) {
@@ -155,7 +174,8 @@ public class IntroActivity extends AppCompatActivity {
         public Object instantiateItem(ViewGroup container, int position) {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = layoutInflater.inflate(layouts[position], container, false);
-            if (position == 2) {
+            container.addView(v);
+            if (position == 1) {
                 Spinner hand_spinner = (Spinner) findViewById(R.id.handedness_spinner);
                 ArrayAdapter<CharSequence> handArrayAdapter = ArrayAdapter.createFromResource(getBaseContext(), R
                         .array.handedness_array, android.R.layout.simple_spinner_item);
@@ -167,7 +187,6 @@ public class IntroActivity extends AppCompatActivity {
                 genderArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 gender_spinner.setAdapter(genderArrayAdapter);
             }
-            container.addView(v);
             return v;
         }
 

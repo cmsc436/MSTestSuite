@@ -10,11 +10,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:paddingTop="30dp"
         android:text="@string/intro_title"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@android:color/black"
         android:textSize="40sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/patient_id"
@@ -24,8 +25,9 @@
         android:paddingTop="30dp"
         android:text="@string/patient_id"
         android:textAlignment="textStart"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/patient_id_box"
@@ -35,7 +37,7 @@
         android:inputType="text"
         android:outlineProvider="bounds"
         android:paddingBottom="10dp"
-        android:textSize="22sp"/>
+        android:textSize="22sp" />
 
     <TextView
         android:id="@+id/age"
@@ -45,8 +47,9 @@
         android:paddingTop="18dp"
         android:text="@string/dob"
         android:textAlignment="textStart"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/dob"
@@ -63,14 +66,15 @@
         android:paddingTop="30dp"
         android:text="@string/gender"
         android:textAlignment="textStart"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <Spinner
+        android:id="@+id/gender_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/gender_spinner"
-        android:textSize="30sp"/>
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/handedness"
@@ -80,13 +84,14 @@
         android:paddingTop="18dp"
         android:text="@string/handedness"
         android:textAlignment="textStart"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <Spinner
+        android:id="@+id/handedness_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/handedness_spinner"
-        android:textSize="30sp"/>
+        android:textSize="30sp" />
 
 </LinearLayout>
