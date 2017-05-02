@@ -37,4 +37,7 @@
         <item>FEMALE</item>
         <item>OTHER</item>
     </string-array>
+    <string name="prescription_spreadsheet_id">1g3R4ul84AY189_CkJ7MwXQ8C-SBumZkWh6feoBSONmo</string>
+
+    <string name="test_apk_folder_id">0B0tPbEe1hFoEWGc4YllWT3hjQ1E</string>
 </resources>

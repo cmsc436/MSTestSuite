@@ -61,6 +61,6 @@ Please place APKs of your test apps in [this folder](https://drive.google.com/dr
 
 One row per patient, with columns:
 
-Patient ID | Date Assigned | Frequency | Column per Test App ... | Status
---- | --- | --- | --- | ---
-String | Google Sheets Datetime | Jenkins format (eventually) | Difficulty Integer (0 is disable, 1 is easiest) | Assigned, Ignored, or Completed
+Patient ID | Date Assigned | Frequency | Number of trials per app | Column per Test App ... | Status
+--- | --- | --- | --- | --- | ---
+String | DD/MM/YYYY HH:MM:SS (24 hour time) | Integer > 0 | Jenkins format (eventually) | Difficulty Integer (0 is disable, 1 is easiest) | Assigned, Ignored, or Completed
