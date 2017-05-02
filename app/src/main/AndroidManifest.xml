@@ -24,7 +24,7 @@
             android:enabled="true"
             android:exported="false"></service>
 
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity"/>
     </application>
 
 </manifest>
