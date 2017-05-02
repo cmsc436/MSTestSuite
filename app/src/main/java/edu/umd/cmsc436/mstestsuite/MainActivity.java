@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.practice_test_recyclerview);
+        mRecyclerView.setItemAnimator(null);
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
