@@ -48,5 +48,6 @@ interface MainContract {
         void onActivityResult(int requestCode, int resultCode, Intent data);
         void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
         void onPackageInstalled ();
+        void onCoordinatorDone ();
     }
 }

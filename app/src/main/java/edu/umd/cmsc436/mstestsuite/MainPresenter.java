@@ -110,7 +110,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
     @Override
     public void onDailyStart() {
-        CoordinatorActivity.start(mView.getContext(), mUserManager.getCurUserID(), mAllDifficulties, mNumTrials);
+        CoordinatorActivity.start(mView.getActivity(), mUserManager.getCurUserID(), mAllDifficulties, mNumTrials);
     }
 
     @Override
@@ -174,6 +174,12 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     @Override
     public void onPackageInstalled() {
         installFirst();
+    }
+
+    @Override
+    public void onCoordinatorDone() {
+        mView.hideBottomSheet();
+        isBottomSheetExpanded = false;
     }
 
     @Override

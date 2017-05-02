@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
+import edu.umd.cmsc436.mstestsuite.ui.CoordinatorActivity;
 import edu.umd.cmsc436.sheets.Sheets;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, Sheets.Host {
@@ -308,6 +309,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mPresenter.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_INSTALL) {
             mPresenter.onPackageInstalled();
+        } else if (requestCode == CoordinatorActivity.REQUEST_CODE) {
+            mPresenter.onCoordinatorDone();
         }
     }
 
