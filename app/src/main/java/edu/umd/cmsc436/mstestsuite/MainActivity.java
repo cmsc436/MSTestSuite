@@ -341,6 +341,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void installPackage(File f) throws IOException {
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            mInstallCache = f;
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_PERMISSION);
+            return;
+        }
+
         FileChannel inChannel = new FileInputStream(f).getChannel();
         File downloadsFolder = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
 
@@ -352,13 +358,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         outFile.setReadable(true);
         outFile.setWritable(true);
         FileChannel outChannel = new FileOutputStream(outFile).getChannel();
-
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            mInstallCache = f;
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_PERMISSION);
-            return;
-        }
 
 
         try {
