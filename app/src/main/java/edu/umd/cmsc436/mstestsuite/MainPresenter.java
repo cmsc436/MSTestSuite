@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.util.Log;
 
 import java.io.File;
@@ -64,6 +65,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     private MainContract.View mView;
 
     private boolean isPractice;
+    private boolean isBottomSheetExpanded;
     private Map<File, Float> mToInstall;
 
     private UserManager mUserManager;
@@ -80,6 +82,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
         mView.hideBottomSheet();
 
         isPractice = false;
+        isBottomSheetExpanded = false;
 
         mUserManager = new UserManager(mView.getContext());
         if (mUserManager.getCurUserID() == null) {
@@ -113,6 +116,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     @Override
     public void onCloseBottomSheet() {
         mView.collapseBottomSheet();
+        isBottomSheetExpanded = false;
     }
 
     @Override
@@ -122,12 +126,16 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
     @Override
     public void onBottomSheetStateChange(int newState) {
-        // nothing
+        isBottomSheetExpanded = newState == BottomSheetBehavior.STATE_EXPANDED;
     }
 
     @Override
     public boolean onBackPressed() {
-        if (isPractice) {
+        if (isBottomSheetExpanded) {
+            isBottomSheetExpanded = false;
+            mView.collapseBottomSheet();
+            return false;
+        } else if (isPractice) {
             isPractice = false;
             mView.loadActions(mMainAdapter);
             return false;
@@ -278,6 +286,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                     public void run() {
                         mMainAdapter.setEnabled(0, true);
                         mView.expandBottomSheet();
+                        isBottomSheetExpanded = true;
                     }
                 });
             }
