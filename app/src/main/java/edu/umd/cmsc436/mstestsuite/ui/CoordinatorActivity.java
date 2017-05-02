@@ -1,6 +1,7 @@
 package edu.umd.cmsc436.mstestsuite.ui;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -140,7 +141,13 @@ public class CoordinatorActivity extends AppCompatActivity implements Sheets.Hos
             toaster.setText(text);
             toaster.show();
 
-            startActivityForResult(mLastIntent, 3000 + mLaunchIntents.size());
+            try {
+                startActivityForResult(mLastIntent, 3000 + mLaunchIntents.size());
+            } catch (ActivityNotFoundException anfe) {
+                toaster.setText((appendage == null ? "null" : appendage.toId()) + " not found");
+                toaster.show();
+                finish();
+            }
         } else {
             // TODO report finished/completed/whatever
             finish();

@@ -95,7 +95,8 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                 mView.getContext().getString(R.string.app_name),
                 mView.getContext().getString(R.string.prescription_spreadsheet_id),
                 mView.getContext().getString(R.string.prescription_spreadsheet_id));
-        mSheet.fetchPrescription(mUserManager.getCurUserID(), this);
+
+        mMainAdapter.setEnabled(0, true);
     }
 
     @Override
@@ -164,7 +165,17 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     @Override
     public void onAppSelected(TestApp app) {
         try {
-            mView.startPracticeMode(app.getPackageName());
+
+            int[] difficulties = new int[mAllApps.length];
+            for (int i = 0; i < mAllApps.length; i++) {
+                if (mAllApps[i].getPackageName().equals(app.getPackageName())) {
+                    difficulties[i] = 1;
+                } else {
+                    difficulties[i] = 0;
+                }
+            }
+
+            CoordinatorActivity.start(mView.getContext(), mUserManager.getCurUserID(), difficulties, 3);
         } catch (ActivityNotFoundException anfe) {
             mView.showToast(app.getDisplayName() + " not found");
         }
