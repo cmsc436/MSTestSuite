@@ -52,6 +52,13 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                 }
             }),
             new Action("Feedback", R.drawable.ic_feedback, null),
+            new Action("Refresh", R.drawable.ic_refresh_prescription, new Runnable() {
+                @Override
+                public void run() {
+                    mMainAdapter.setEnabled(0, false);
+                    mSheet.fetchPrescription(mUserManager.getCurUserID(), MainPresenter.this);
+                }
+            })
     };
 
     private MainContract.View mView;
