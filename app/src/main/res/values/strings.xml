@@ -12,4 +12,32 @@
     <string name="main_actions_header">Welcome, %s</string>
     <string name="enter_text_here">Type feedback below:</string>
     <string name="title_activity_feedback">Feedback</string>
+
+    <string name="icon_for_current_test">Icon for current test</string>
+    <string name="intro_instructions">This application is designed to … \n\n There will be a
+        number of tests that you will complete on a given day.  When you do not have a selection
+        of tests to perform for a day, you can practice these tests through this app as well.
+        \n\n You also are able to track your progress among each test. </string>
+    <string name="introscreen_continue">ENTER</string>
+    <string name="introscreen_next_text">NEXT</string>
+    <string name="welcome">Welcome to the Test Suite</string>
+    <string name="intro_title">Test Suite</string>
+    <string name="patient_id">Patient ID:</string>
+    <string name="enter_patient_id">Enter Patient ID</string>
+    <string name="dob">Date of Birth(mm/dd/yyyy):</string>
+    <string name="gender">Gender</string>
+    <string name="handedness">Handedness:</string>
+
+    <string-array name="handedness_array">
+        <item>RIGHT</item>
+        <item>LEFT</item>
+        <item>AMBIDEXTROUS</item>
+    </string-array>
+
+    <string-array name="gender_array">
+        <item>MALE</item>
+        <item>FEMALE</item>
+        <item>OTHER</item>
+    </string-array>
+
 </resources>
