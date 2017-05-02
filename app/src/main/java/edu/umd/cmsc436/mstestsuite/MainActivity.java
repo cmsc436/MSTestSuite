@@ -216,6 +216,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
+    public void sendFeedbackToDoc() {
+        Intent intent = new Intent(this, FeedbackActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public void showToast(String message) {
         mToast.setText(message);
         mToast.show();

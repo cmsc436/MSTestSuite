@@ -17,6 +17,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".FeedbackActivity">
+        </activity>
+        <service
+            android:name=".model.PharmacistService"
+            android:enabled="true"
+            android:exported="false"></service>
         <activity
             android:name=".ui.CoordinatorActivity"
             android:theme="@style/AppTheme.Fullscreen">
