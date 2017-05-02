@@ -66,15 +66,16 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
     private boolean isPractice;
     private boolean isBottomSheetExpanded;
-    private Map<File, Float> mToInstall;
-
     private UserManager mUserManager;
+
     private ActionsAdapter mMainAdapter;
     private ActionsAdapter mPracticeModeAdapter;
     private Sheets mSheet;
     private TestApp[] mAllApps;
-    private int[] mAllDifficulties;
+
     private int mNumTrials;
+    private int[] mAllDifficulties;
+    private Map<File, Float> mToInstall;
     private ArrayList<TestApp> mDesiredApps;
 
     MainPresenter(MainContract.View v) {
@@ -153,6 +154,8 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     public void onUserSelected(String patient_id) {
         mUserManager.onUserSelected(patient_id);
         mMainAdapter.setHeader(mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
+        mMainAdapter.setEnabled(0, false);
+        mSheet.fetchPrescription(mUserManager.getCurUserID(), this);
     }
 
     @Override
@@ -201,6 +204,9 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
         if (list == null) {
             Log.e(getClass().getCanonicalName(), "Null prescription");
+            mView.showToast("No prescription found for " + mUserManager.getCurUserID());
+            isBottomSheetExpanded = false;
+            mView.hideBottomSheet();
             return;
         }
 
