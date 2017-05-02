@@ -36,5 +36,61 @@
         <item>@drawable/ic_symbol</item>
     </array>
 
-    <!-- TODO: Add an array for supported appendages, with each <item> as a <string-array> -->
+    <array name="supported_appendages">
+        <item>@array/tap</item>
+        <item>@array/spiral</item>
+        <item>@array/balance</item>
+        <item>@array/level</item>
+        <item>@array/pop</item>
+        <item>@array/flex</item>
+        <item>@array/walk_indoors</item>
+        <item>@array/walk_outdoors</item>
+        <item>@array/symbol</item>
+    </array>
+
+    <string-array name="tap">
+        <item>LH_TAP</item>
+        <item>RH_TAP</item>
+        <item>LF_TAP</item>
+        <item>RF_TAP</item>
+    </string-array>
+
+    <string-array name="spiral">
+        <item>LH_SPIRAL</item>
+        <item>RH_SPIRAL</item>
+    </string-array>
+
+    <string-array name="balance">
+        <item>SWAY_OPEN_APART</item>
+        <item>SWAY_OPEN_TOGETHER</item>
+        <item>SWAY_CLOSED</item>
+    </string-array>
+
+    <string-array name="level">
+        <item>LH_LEVEL</item>
+        <item>RH_LEVEL</item>
+    </string-array>
+
+    <string-array name="pop">
+        <item>LH_POP</item>
+        <item>RH_POP</item>
+    </string-array>
+
+    <string-array name="flex">
+        <item>LH_CURL</item>
+        <item>RH_CURL</item>
+    </string-array>
+
+    <string-array name="walk_indoors">
+        <item>INDOOR_WALKING</item>
+    </string-array>
+
+    <string-array name="walk_outdoors">
+        <item>OUTDOOR_WALKING</item>
+    </string-array>
+
+    <string-array name="symbol">
+        <!-- TODO whenever it updates -->
+        <item>RH_TAP</item>
+    </string-array>
 </resources>

@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private Button mPeekButton;
     private BottomSheetBehavior mBottomSheet;
     private ImageView mCloseButton;
+    private View mSpacer;
 
     private MainContract.Presenter mPresenter;
 
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
+        mSpacer = findViewById(R.id.spacer);
+        findViewById(R.id.bottom_sheet).setNestedScrollingEnabled(false);
 
         mInstallCache = null;
 
@@ -92,6 +96,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             @Override
             public void onClick(View v) {
                 mPresenter.onCloseBottomSheet();
+            }
+        });
+
+        findViewById(R.id.expanded_daily_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.onDailyStart();
             }
         });
 
@@ -151,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mBottomSheet.setHideable(false);
                 mBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
@@ -162,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mBottomSheet.setHideable(false);
                 mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mSpacer.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -173,8 +183,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mBottomSheet.setHideable(true);
                 mBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
+                mSpacer.setVisibility(View.GONE);
             }
         });
     }
