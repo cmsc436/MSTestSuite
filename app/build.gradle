@@ -6,7 +6,8 @@ android {
     defaultConfig {
         applicationId "edu.umd.cmsc436.mstestsuite"
         minSdkVersion 22
-        targetSdkVersion 25
+        //noinspection OldTargetApi
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
