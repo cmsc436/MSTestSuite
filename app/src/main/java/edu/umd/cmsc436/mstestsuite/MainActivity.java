@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
+import edu.umd.cmsc436.mstestsuite.ui.CoordinatorActivity;
 import edu.umd.cmsc436.sheets.Sheets;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, Sheets.Host {
@@ -308,6 +309,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mPresenter.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_INSTALL) {
             mPresenter.onPackageInstalled();
+        } else if (requestCode == CoordinatorActivity.REQUEST_CODE) {
+            mPresenter.onCoordinatorDone();
         }
     }
 
@@ -341,6 +344,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void installPackage(File f) throws IOException {
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            mInstallCache = f;
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_PERMISSION);
+            return;
+        }
+
         FileChannel inChannel = new FileInputStream(f).getChannel();
         File downloadsFolder = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
 
@@ -352,13 +361,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         outFile.setReadable(true);
         outFile.setWritable(true);
         FileChannel outChannel = new FileOutputStream(outFile).getChannel();
-
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            mInstallCache = f;
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_PERMISSION);
-            return;
-        }
 
 
         try {

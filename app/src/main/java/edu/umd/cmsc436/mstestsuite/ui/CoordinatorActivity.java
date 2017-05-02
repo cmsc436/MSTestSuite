@@ -1,7 +1,7 @@
 package edu.umd.cmsc436.mstestsuite.ui;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,13 +24,14 @@ public class CoordinatorActivity extends AppCompatActivity implements Sheets.Hos
     private static final String KEY_PID = "patient id";
     private static final String KEY_DIFFICULTIES = "difficulties";
     private static final String KEY_N_TRIALS = "number of trials";
+    public static final int REQUEST_CODE = 789;
 
-    public static void start(Context context, String patientId, int[] difficulties, int n_trials) {
-        Intent starter = new Intent(context, CoordinatorActivity.class);
+    public static void start(Activity activity, String patientId, int[] difficulties, int n_trials) {
+        Intent starter = new Intent(activity, CoordinatorActivity.class);
         starter.putExtra(KEY_PID, patientId);
         starter.putExtra(KEY_DIFFICULTIES, difficulties);
         starter.putExtra(KEY_N_TRIALS, n_trials);
-        context.startActivity(starter);
+        activity.startActivityForResult(starter, REQUEST_CODE);
     }
 
     private String mCurPatient;
