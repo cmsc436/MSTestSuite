@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -274,12 +275,19 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void showHistoryDialog(final String user) {
+    public void showDialog(final String type, final String... user) {
         final Dialog dialog = new AppCompatDialog(this);
         final String [] app_array = getResources().getStringArray(R.array.display_names);
 
         @SuppressLint("InflateParams")
-        View root = dialog.getLayoutInflater().inflate(R.layout.history_chooser, null, false);
+        View root = dialog.getLayoutInflater().inflate(R.layout.plain_chooser, null, false);
+        TextView chooser_title = (TextView) root.findViewById(R.id.chooser_title);
+
+        if (type.equals("Help")) {
+            chooser_title.setText("View tutorial for: ");
+        } else if (type.equals("History")) {
+            chooser_title.setText("Show score history for: ");
+        }
 
         ListView lv = (ListView) root.findViewById(R.id.app_history_listview);
 
@@ -290,12 +298,23 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 dialog.dismiss();
                 String app_name = "edu.umd.cmsc436." + app_array[position];
                 try {
-                    Intent i = new Intent(app_name + ".action.HISTORY");
-                    i.putExtra("user", user);
+                    Intent i = new Intent();
+                    if (type.equals("Help")) {
+                        i.setAction(app_name + ".action.HELP");
+                    } else if (type.equals("History")) {
+                        i.setAction(app_name + ".action.HISTORY");
+                        i.putExtra("user", user);
+                    }
                     i.addCategory(Intent.CATEGORY_DEFAULT);
                     startActivity(i);
                 } catch(ActivityNotFoundException e) {
-                    showToast(app_array[position] + " not found");
+                    if (type.equals("Help")) {
+                        showToast(app_array[position] + " tutorial" + " not found");
+                    } else if (type.equals("History")) {
+                        showToast(app_array[position] + " history" + " not found");
+                    } else {
+                        showToast("Unknown type");
+                    }
                 }
             }
         });
