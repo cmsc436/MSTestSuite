@@ -53,8 +53,8 @@
     </array>
 
     <string-array name="tap_hand">
-        <item>LF_TAP</item>
-        <item>RF_TAP</item>
+        <item>LH_TAP</item>
+        <item>RH_TAP</item>
     </string-array>
 
     <string-array name="tap_foot">
