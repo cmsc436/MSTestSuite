@@ -31,11 +31,17 @@ import edu.umd.cmsc436.sheets.Sheets;
 class MainPresenter implements MainContract.Presenter, TestApp.Events,
         Sheets.OnPrescriptionFetchedListener, PackageChecker.OnCheckFinishListener {
 
+    private enum Mode {
+        MAIN,
+        PRACTICE,
+        TRIAL
+    }
+
     private final Action[] actions = new Action[] {
             new Action("Practice", R.drawable.ic_practice_mode, new Runnable() {
                 @Override
                 public void run() {
-                    isPractice = true;
+                    mCurMode = Mode.PRACTICE;
                     mView.loadActions(mPracticeModeAdapter);
                 }
             }),
@@ -64,14 +70,17 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
     private MainContract.View mView;
 
-    private boolean isPractice;
+    private Mode mCurMode;
     private boolean isBottomSheetExpanded;
     private UserManager mUserManager;
 
     private ActionsAdapter mMainAdapter;
     private ActionsAdapter mPracticeModeAdapter;
+    private ActionsAdapter mTrialModeAdapter;
     private Sheets mSheet;
     private TestApp[] mAllApps;
+    private TestApp[] mAllTrialApps;
+    private List<TestApp> mTrialDisplayApps;
 
     private int mNumTrials;
     private int[] mAllDifficulties;
@@ -82,7 +91,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
         mView = v;
         mView.hideBottomSheet();
 
-        isPractice = false;
+        mCurMode = Mode.MAIN;
         isBottomSheetExpanded = false;
 
         mUserManager = new UserManager(mView.getContext());
@@ -92,10 +101,24 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
         }
 
         mAllApps = PackageUtil.loadAppInfo(mView.getContext(), this);
+        mAllTrialApps = PackageUtil.loadAppInfo(mView.getContext(), new TestApp.Events() {
+            @Override
+            public void onAppSelected(TestApp app) {
+                int i;
+                for (i = 0; i < mAllApps.length; i++) {
+                    if (mAllApps[i].getPackageName().equals(app.getPackageName())) {
+                        break;
+                    }
+                }
+                CoordinatorActivity.start(mView.getActivity(), mUserManager.getCurUserID(), mAllDifficulties[i], PackageUtil.getType(app.getPackageName()), mNumTrials);
+            }
+        });
+
         mToInstall = new HashMap<>();
 
         mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
         mPracticeModeAdapter = new ActionsAdapter(mAllApps, mView.getContext().getString(R.string.practice_mode_header_text));
+        mTrialModeAdapter = new ActionsAdapter(mAllTrialApps, mView.getContext().getString(R.string.trial_mode_header_text));
 
         mMainAdapter.setEnabled(0, false);
 
@@ -111,13 +134,14 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
     @Override
     public void onDailyStart() {
-        CoordinatorActivity.start(mView.getActivity(), mUserManager.getCurUserID(), mAllDifficulties, mNumTrials);
+        mView.hideBottomSheet();
+        mView.loadActions(mTrialModeAdapter);
+        mCurMode = Mode.TRIAL;
     }
 
     @Override
     public void onCloseBottomSheet() {
         mView.collapseBottomSheet();
-        isBottomSheetExpanded = false;
     }
 
     @Override
@@ -133,11 +157,13 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     @Override
     public boolean onBackPressed() {
         if (isBottomSheetExpanded) {
-            isBottomSheetExpanded = false;
             mView.collapseBottomSheet();
             return false;
-        } else if (isPractice) {
-            isPractice = false;
+        } else if (mCurMode == Mode.PRACTICE || mCurMode == Mode.TRIAL) {
+            if (mCurMode == Mode.TRIAL && mTrialDisplayApps.size() > 0) {
+                mView.collapseBottomSheet();
+            }
+            mCurMode = Mode.MAIN;
             mView.loadActions(mMainAdapter);
             return false;
         } else {
@@ -182,7 +208,24 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     @Override
     public void onCoordinatorDone() {
         mView.hideBottomSheet();
-        isBottomSheetExpanded = false;
+    }
+
+    @Override
+    public void onTrialFinished(String type) {
+
+        for (int i = 0; i < mTrialDisplayApps.size(); i++) {
+            if (type.equals(PackageUtil.getType(mTrialDisplayApps.get(i).getPackageName()))) {
+                mTrialDisplayApps.remove(i);
+                break;
+            }
+        }
+
+        mTrialModeAdapter.setActions(mTrialDisplayApps.toArray(new Action[mTrialDisplayApps.size()]));
+
+        if (mTrialDisplayApps.size() == 0) {
+            mView.showToast(mView.getContext().getString(R.string.trials_completed_text));
+            onBackPressed();
+        }
     }
 
     @Override
@@ -205,7 +248,6 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
         if (list == null) {
             Log.e(getClass().getCanonicalName(), "Null prescription");
             mView.showToast("No prescription found for " + mUserManager.getCurUserID());
-            isBottomSheetExpanded = false;
             mView.hideBottomSheet();
             return;
         }
@@ -282,9 +324,11 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
             @Override
             public void onCheckFinished(Map<String, Float> versionMap) {
 
+                refreshTrialAdapter(versionMap);
+
                 List<TestApp> toShow = new ArrayList<>();
                 for (TestApp app : mDesiredApps) {
-                    String type = app.getPackageName().replaceFirst("edu\\.umd\\.cmsc436\\.", "");
+                    String type = PackageUtil.getType(app.getPackageName());
                     if (versionMap.containsKey(type) && versionMap.get(type) > 0f) {
                         // well we have an app I suppose
                         toShow.add(app);
@@ -298,11 +342,21 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                     public void run() {
                         mMainAdapter.setEnabled(0, true);
                         mView.expandBottomSheet();
-                        isBottomSheetExpanded = true;
                     }
                 });
             }
         });
         packageChecker.execute(mDesiredApps.toArray(new TestApp[mDesiredApps.size()]));
+    }
+
+    private void refreshTrialAdapter(Map<String, Float> versionMap) {
+        mTrialDisplayApps = new ArrayList<>();
+        for (TestApp app : mAllTrialApps) {
+            String type = PackageUtil.getType(app.getPackageName());
+            if (versionMap.containsKey(type) && versionMap.get(type) > 0f) {
+                mTrialDisplayApps.add(app);
+            }
+        }
+        mTrialModeAdapter = new ActionsAdapter(mTrialDisplayApps.toArray(new Action[mTrialDisplayApps.size()]), mView.getContext().getString(R.string.trial_mode_header_text));
     }
 }

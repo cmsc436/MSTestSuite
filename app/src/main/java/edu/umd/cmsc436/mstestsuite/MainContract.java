@@ -49,5 +49,6 @@ interface MainContract {
         void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
         void onPackageInstalled ();
         void onCoordinatorDone ();
+        void onTrialFinished (String type);
     }
 }

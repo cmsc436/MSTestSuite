@@ -30,7 +30,7 @@ public class PackageChecker extends AsyncTask<TestApp, Void, Map<String, Float>>
         Map<String, Float> results = new HashMap<>();
 
         for (TestApp app : params) {
-            String type = app.getPackageName().replaceFirst("edu\\.umd\\.cmsc436\\.", "");
+            String type = PackageUtil.getType(app.getPackageName());
             if (packageUtil.wouldSucceed(app)) {
                 if (should_update) {
                     results.put(type, packageUtil.getVersion(app));
