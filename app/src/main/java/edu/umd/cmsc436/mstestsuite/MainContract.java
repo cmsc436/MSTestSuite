@@ -33,6 +33,8 @@ interface MainContract {
         Activity getActivity ();
         void installPackage (File f) throws IOException;
         void showHistoryDialog (String user);
+        void openFeedbackEmail ();
+        void showHelpDialog ();
     }
 
     // things the presenter responds to
