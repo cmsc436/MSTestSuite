@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -290,12 +291,44 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 dialog.dismiss();
                 String app_name = "edu.umd.cmsc436." + app_array[position];
                 try {
-                    Intent i = new Intent(app_name + ".action.HISTORY");
+                    Intent i = new Intent();
+                    i.setAction(app_name + ".action.HISTORY");
                     i.putExtra("user", user);
                     i.addCategory(Intent.CATEGORY_DEFAULT);
                     startActivity(i);
                 } catch(ActivityNotFoundException e) {
-                    showToast(app_array[position] + " not found");
+                    showToast(app_array[position] + " history" + " not found");
+                }
+            }
+        });
+
+        dialog.setContentView(root);
+        dialog.show();
+    }
+
+    @Override
+    public void showHelpDialog() {
+        final Dialog dialog = new AppCompatDialog(this);
+        final String [] app_array = getResources().getStringArray(R.array.display_names);
+
+        @SuppressLint("InflateParams")
+        View root = dialog.getLayoutInflater().inflate(R.layout.help_chooser, null, false);
+
+        ListView lv = (ListView) root.findViewById(R.id.app_help_listview);
+
+        lv.setAdapter(new ArrayAdapter<>(this, R.layout.plain_list_item, R.id.listview_item_textview, app_array));
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dialog.dismiss();
+                String app_name = "edu.umd.cmsc436." + app_array[position];
+                try {
+                    Intent i = new Intent();
+                    i.setAction(app_name + ".action.HELP");
+                    i.addCategory(Intent.CATEGORY_DEFAULT);
+                    startActivity(i);
+                } catch(ActivityNotFoundException e) {
+                    showToast(app_array[position] + " tutorial" + " not found");
                 }
             }
         });
