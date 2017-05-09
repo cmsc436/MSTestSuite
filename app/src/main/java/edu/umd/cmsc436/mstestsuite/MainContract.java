@@ -29,6 +29,7 @@ interface MainContract {
         void startPracticeMode(String packageName) throws ActivityNotFoundException;
         Context getContext ();
         void showUserSwitcher (String[] users);
+        void sendFeedbackToDoc();
         Sheets.Host getHost ();
         Activity getActivity ();
         void installPackage (File f) throws IOException;

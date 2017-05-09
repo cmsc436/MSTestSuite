@@ -10,6 +10,8 @@
     <string name="new_patient_id_hint_text">New patient ID</string>
     <string name="create_user_button_text">Create</string>
     <string name="main_actions_header">Welcome, %s</string>
+    <string name="enter_text_here">Type feedback below:</string>
+    <string name="title_activity_feedback">Feedback</string>
 
     <string name="icon_for_current_test">Icon for current test</string>
     <string name="intro_instructions">This application is designed to track your performance on various tests.\n\nEach time you open this application, if you have tests assigned by your doctor, there will be a pop-up asking you to complete them. If you choose not to complete them in that given moment, you can come back to them by clicking the DAILY button. You also have the option to practice the various tests prescribed. You are also able to track your progress within each test.\n\nIf there are problems when completing your test, you can go to the feedback section to report the problems, which will be sent to your doctor.</string>
