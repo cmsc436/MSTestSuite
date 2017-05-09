@@ -27,6 +27,10 @@ public class PackageUtil {
         mVersionPrefs = c.getSharedPreferences(PREFS_VERSIONS, Context.MODE_PRIVATE);
     }
 
+    public static String getType (String packageName) {
+        return packageName.replaceFirst("edu\\.umd\\.cmsc436\\.", "");
+    }
+
     public static TestApp[] loadAppInfo(Context c, TestApp.Events callback) {
         Resources res = c.getResources();
         TypedArray package_names = res.obtainTypedArray(R.array.test_prefixes);

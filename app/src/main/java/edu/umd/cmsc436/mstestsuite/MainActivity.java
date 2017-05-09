@@ -357,7 +357,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         if (requestCode == REQUEST_CODE_INSTALL) {
             mPresenter.onPackageInstalled();
         } else if (requestCode == CoordinatorActivity.REQUEST_CODE) {
-            mPresenter.onCoordinatorDone();
+            if (resultCode == RESULT_OK) {
+                mPresenter.onTrialFinished(CoordinatorActivity.getType(data));
+            } else {
+                mPresenter.onCoordinatorDone();
+            }
         }
     }
 

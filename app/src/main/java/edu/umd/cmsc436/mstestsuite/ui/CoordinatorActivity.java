@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,22 +21,33 @@ import edu.umd.cmsc436.sheets.Sheets;
 public class CoordinatorActivity extends AppCompatActivity implements Sheets.Host {
 
     private static final String KEY_PID = "patient id";
-    private static final String KEY_DIFFICULTIES = "difficulties";
+    private static final String KEY_DIFFICULTY = "difficulties";
     private static final String KEY_N_TRIALS = "number of trials";
+    private static final String KEY_APP_TYPE = "app pkg name";
     public static final int REQUEST_CODE = 789;
 
-    public static void start(Activity activity, String patientId, int[] difficulties, int n_trials) {
+    public static void start(Activity activity, String patientId, int difficulty, String app_type, int n_trials) {
         Intent starter = new Intent(activity, CoordinatorActivity.class);
         starter.putExtra(KEY_PID, patientId);
-        starter.putExtra(KEY_DIFFICULTIES, difficulties);
+        starter.putExtra(KEY_DIFFICULTY, difficulty);
+        starter.putExtra(KEY_APP_TYPE, app_type);
         starter.putExtra(KEY_N_TRIALS, n_trials);
         activity.startActivityForResult(starter, REQUEST_CODE);
     }
 
+    public static String getType (Intent i) {
+        if (i != null && i.getExtras() != null) {
+            return i.getStringExtra(KEY_APP_TYPE);
+        }
+
+        return null;
+    }
+
     private String mCurPatient;
     private int mNumTrials;
-    private TestApp[] mDailyApps;
-    private Integer[] mDailyDifficulties;
+    private TestApp mDailyApp;
+    private int mDailyDifficulty;
+    private String mAppType;
     private List<Intent> mLaunchIntents;
     private Intent mLastIntent;
     private Sheets mScoreSheet;
@@ -56,31 +66,22 @@ public class CoordinatorActivity extends AppCompatActivity implements Sheets.Hos
             Bundle extras = getIntent().getExtras();
             mCurPatient = extras.getString(KEY_PID, "default patient");
             mNumTrials = extras.getInt(KEY_N_TRIALS);
-
-            int[] difficulties = extras.getIntArray(KEY_DIFFICULTIES);
+            mAppType= extras.getString(KEY_APP_TYPE);
             TestApp[] allApps = PackageUtil.loadAppInfo(this, null);
-            if (difficulties == null || difficulties.length != allApps.length) {
-                Log.e(getClass().getCanonicalName(), "lengths do not match");
-                finish();
-                return;
-            }
 
-            ArrayList<TestApp> filteredApps = new ArrayList<>();
-            ArrayList<Integer> filteredDifficulties = new ArrayList<>();
-            for (int i = 0; i < difficulties.length; i++) {
-                if (difficulties[i] > 0) {
-                    filteredApps.add(allApps[i]);
-                    filteredDifficulties.add(difficulties[i]);
+            for (TestApp app : allApps) {
+                if (mAppType.equals(PackageUtil.getType(app.getPackageName()))) {
+                    mDailyApp = app;
+                    break;
                 }
             }
 
+            mDailyDifficulty = extras.getInt(KEY_DIFFICULTY);
+
             toaster = Toast.makeText(this, "", Toast.LENGTH_SHORT);
-            mDailyApps = filteredApps.toArray(new TestApp[filteredApps.size()]);
-            mDailyDifficulties = filteredDifficulties.toArray(new Integer[filteredDifficulties.size()]);
             createLaunchIntents();
         } else {
-            finish();
-            return;
+            finishWithType(RESULT_CANCELED);
         }
 
         once = false;
@@ -107,6 +108,7 @@ public class CoordinatorActivity extends AppCompatActivity implements Sheets.Hos
             if (resultCode == RESULT_OK) {
                 mScoreHolder.add(data.getExtras().getFloat(TrialMode.KEY_SCORE, 0f));
             } else {
+                // TODO finishWithResult(RESULT_CANCELLED)
                 mScoreHolder.add(0f);
             }
 
@@ -143,27 +145,29 @@ public class CoordinatorActivity extends AppCompatActivity implements Sheets.Hos
 
             startActivityForResult(mLastIntent, 3000 + mLaunchIntents.size());
         } else {
-            // TODO report finished/completed/whatever
-            finish();
+            finishWithType(RESULT_OK);
         }
+    }
+
+    private void finishWithType(int result_code) {
+        Intent i = new Intent();
+        i.putExtra(KEY_APP_TYPE, mAppType);
+        setResult(result_code, i);
+        finish();
     }
 
     private void createLaunchIntents () {
         mLaunchIntents = new ArrayList<>();
 
-        for (int i = 0; i < mDailyApps.length; i++) {
-            TestApp app = mDailyApps[i];
-            int difficulty = mDailyDifficulties[i];
-            for (Sheets.TestType appendage : app.getSupportedAppendages()) {
-                for (int cur_trial = 1; cur_trial <= mNumTrials; cur_trial++) {
-                    Intent launcher = new Intent(app.getPackageName() + ".action.TRIAL");
-                    launcher.putExtra(TrialMode.KEY_APPENDAGE, appendage.ordinal());
-                    launcher.putExtra(TrialMode.KEY_TRIAL_NUM, cur_trial);
-                    launcher.putExtra(TrialMode.KEY_DIFFICULTY, difficulty);
-                    launcher.putExtra(TrialMode.KEY_TRIAL_OUT_OF, mNumTrials);
-                    launcher.putExtra(TrialMode.KEY_PATIENT_ID, mCurPatient);
-                    mLaunchIntents.add(launcher);
-                }
+        for (Sheets.TestType appendage : mDailyApp.getSupportedAppendages()) {
+            for (int cur_trial = 1; cur_trial <= mNumTrials; cur_trial++) {
+                Intent launcher = new Intent(mDailyApp.getPackageName() + ".action.TRIAL");
+                launcher.putExtra(TrialMode.KEY_APPENDAGE, appendage.ordinal());
+                launcher.putExtra(TrialMode.KEY_TRIAL_NUM, cur_trial);
+                launcher.putExtra(TrialMode.KEY_DIFFICULTY, mDailyDifficulty);
+                launcher.putExtra(TrialMode.KEY_TRIAL_OUT_OF, mNumTrials);
+                launcher.putExtra(TrialMode.KEY_PATIENT_ID, mCurPatient);
+                mLaunchIntents.add(launcher);
             }
         }
     }
