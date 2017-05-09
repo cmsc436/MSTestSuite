@@ -73,6 +73,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                 @Override
                 public void run() {
                     mMainAdapter.setEnabled(0, false);
+                    mView.hideBottomSheet();
                     mSheet.fetchPrescription(mUserManager.getCurUserID(), MainPresenter.this);
                 }
             })
@@ -236,6 +237,13 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
             mView.showToast(mView.getContext().getString(R.string.trials_completed_text));
             onBackPressed();
         }
+    }
+
+    @Override
+    public void onGoToPracticeMode() {
+        mView.collapseBottomSheet();
+        mCurMode = Mode.PRACTICE;
+        mView.loadActions(mPracticeModeAdapter);
     }
 
     @Override

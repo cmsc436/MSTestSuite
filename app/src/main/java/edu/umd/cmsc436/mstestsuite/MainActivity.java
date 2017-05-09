@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         findViewById(R.id.expanded_practice_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.onCloseBottomSheet();
+                mPresenter.onGoToPracticeMode();
             }
         });
 
@@ -280,11 +280,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
         startActivity(i);
-        /*try {
-            startActivity(Intent.createChooser(i, "Send mail..."));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(MyActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-        }*/
     }
 
     @Override
