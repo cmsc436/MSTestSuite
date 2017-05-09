@@ -275,6 +275,19 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
+    public void openFeedbackEmail () {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+        startActivity(i);
+        /*try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(MyActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }*/
+    }
+
+    @Override
     public void showHistoryDialog(final String user) {
         final Dialog dialog = new AppCompatDialog(this);
         final String [] app_array = getResources().getStringArray(R.array.display_names);
