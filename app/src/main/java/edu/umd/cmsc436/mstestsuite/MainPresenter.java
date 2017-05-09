@@ -51,14 +51,24 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                     mView.showUserSwitcher(mUserManager.getAllUsers().toArray(new String[mUserManager.getAllUsers().size()]));
                 }
             }),
-            new Action("Help", R.drawable.ic_help, null),
+            new Action("Help", R.drawable.ic_help, new Runnable() {
+                @Override
+                public void run() {
+                    mView.showHelpDialog();
+                }
+            }),
             new Action("History", R.drawable.ic_history, new Runnable() {
                 @Override
                 public void run() {
                     mView.showHistoryDialog(mUserManager.getCurUserID());
                 }
             }),
-            new Action("Feedback", R.drawable.ic_feedback, null),
+            new Action("Feedback", R.drawable.ic_feedback, new Runnable() {
+                @Override
+                public void run() {
+                    mView.openFeedbackEmail();
+                }
+            }),
             new Action("Refresh", R.drawable.ic_refresh_prescription, new Runnable() {
                 @Override
                 public void run() {
