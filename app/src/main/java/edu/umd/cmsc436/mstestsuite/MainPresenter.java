@@ -242,8 +242,10 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     @Override
     public void onGoToPracticeMode() {
         mView.collapseBottomSheet();
-        mCurMode = Mode.PRACTICE;
-        mView.loadActions(mPracticeModeAdapter);
+        if (mCurMode != Mode.PRACTICE) {
+            mCurMode = Mode.PRACTICE;
+            mView.loadActions(mPracticeModeAdapter);
+        }
     }
 
     @Override
