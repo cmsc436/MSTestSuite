@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.util.Log;
 
+import edu.umd.cmsc436.mstestsuite.R;
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
 
 /**
@@ -22,6 +25,37 @@ public class PackageUtil {
     public PackageUtil(Context c) {
         pm = c.getPackageManager();
         mVersionPrefs = c.getSharedPreferences(PREFS_VERSIONS, Context.MODE_PRIVATE);
+    }
+
+    public static TestApp[] loadAppInfo(Context c, TestApp.Events callback) {
+        Resources res = c.getResources();
+        TypedArray package_names = res.obtainTypedArray(R.array.test_prefixes);
+        TypedArray display_names = res.obtainTypedArray(R.array.display_names);
+        TypedArray icons = res.obtainTypedArray(R.array.icons);
+        TypedArray supportedAppendages = res.obtainTypedArray(R.array.supported_appendages);
+
+        TestApp[] apps = new TestApp[package_names.length()];
+        if (package_names.length() == display_names.length() && display_names.length() == icons.length() && icons.length() == supportedAppendages.length()) {
+            for (int i = 0; i < package_names.length(); i++) {
+                apps[i] = new TestApp(
+                        package_names.getString(i),
+                        display_names.getString(i),
+                        icons.getResourceId(i, R.mipmap.ic_launcher),
+                        res.getTextArray(supportedAppendages.getResourceId(i, 0)),
+                        callback
+                );
+            }
+        } else {
+            Log.e(PackageUtil.class.getCanonicalName(), "XML resource arrays not same length");
+            apps = new TestApp[0];
+        }
+
+        package_names.recycle();
+        display_names.recycle();
+        icons.recycle();
+        supportedAppendages.recycle();
+
+        return apps;
     }
 
     private boolean wouldSucceed (Intent i) {

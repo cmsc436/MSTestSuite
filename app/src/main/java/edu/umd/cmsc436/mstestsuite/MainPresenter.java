@@ -2,10 +2,9 @@ package edu.umd.cmsc436.mstestsuite;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.util.Log;
 
 import java.io.File;
@@ -19,6 +18,7 @@ import edu.umd.cmsc436.mstestsuite.data.Action;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.data.TestApp;
 import edu.umd.cmsc436.mstestsuite.model.UserManager;
+import edu.umd.cmsc436.mstestsuite.ui.CoordinatorActivity;
 import edu.umd.cmsc436.mstestsuite.util.PackageChecker;
 import edu.umd.cmsc436.mstestsuite.util.PackageUtil;
 import edu.umd.cmsc436.sheets.DriveApkTask;
@@ -58,18 +58,29 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                     mView.showHistoryDialog(mUserManager.getCurUserID());
                 }
             }),
+            new Action("Refresh", R.drawable.ic_refresh_prescription, new Runnable() {
+                @Override
+                public void run() {
+                    mMainAdapter.setEnabled(0, false);
+                    mSheet.fetchPrescription(mUserManager.getCurUserID(), MainPresenter.this);
+                }
+            })
     };
 
     private MainContract.View mView;
 
     private boolean isPractice;
-    private Map<File, Float> mToInstall;
-
+    private boolean isBottomSheetExpanded;
     private UserManager mUserManager;
+
     private ActionsAdapter mMainAdapter;
     private ActionsAdapter mPracticeModeAdapter;
     private Sheets mSheet;
     private TestApp[] mAllApps;
+
+    private int mNumTrials;
+    private int[] mAllDifficulties;
+    private Map<File, Float> mToInstall;
     private ArrayList<TestApp> mDesiredApps;
 
     MainPresenter(MainContract.View v) {
@@ -77,6 +88,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
         mView.hideBottomSheet();
 
         isPractice = false;
+        isBottomSheetExpanded = false;
 
         mUserManager = new UserManager(mView.getContext());
         if (mUserManager.getCurUserID() == null) {
@@ -84,7 +96,7 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
             mUserManager = new UserManager(mView.getContext());
         }
 
-        mAllApps = loadAppInfo();
+        mAllApps = PackageUtil.loadAppInfo(mView.getContext(), this);
         mToInstall = new HashMap<>();
 
         mMainAdapter = new ActionsAdapter(actions, mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
@@ -102,37 +114,15 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
         mSheet.fetchPrescription(mUserManager.getCurUserID(), this);
     }
 
-    private TestApp[] loadAppInfo() {
-        Resources res = mView.getContext().getResources();
-        TypedArray package_names = res.obtainTypedArray(R.array.test_prefixes);
-        TypedArray display_names = res.obtainTypedArray(R.array.display_names);
-        TypedArray icons = res.obtainTypedArray(R.array.icons);
-
-        TestApp[] apps = new TestApp[package_names.length()];
-        if (package_names.length() == display_names.length() && display_names.length() == icons.length()) {
-            for (int i = 0; i < package_names.length(); i++) {
-                apps[i] = new TestApp(package_names.getString(i), display_names.getString(i), icons.getResourceId(i, R.mipmap.ic_launcher), this);
-            }
-        } else {
-            Log.e(getClass().getCanonicalName(), "XML resource arrays not same length");
-            apps = new TestApp[0];
-        }
-
-        package_names.recycle();
-        display_names.recycle();
-        icons.recycle();
-
-        return apps;
-    }
-
     @Override
     public void onDailyStart() {
-        // TODO
+        CoordinatorActivity.start(mView.getActivity(), mUserManager.getCurUserID(), mAllDifficulties, mNumTrials);
     }
 
     @Override
     public void onCloseBottomSheet() {
         mView.collapseBottomSheet();
+        isBottomSheetExpanded = false;
     }
 
     @Override
@@ -142,12 +132,16 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
     @Override
     public void onBottomSheetStateChange(int newState) {
-        // nothing
+        isBottomSheetExpanded = newState == BottomSheetBehavior.STATE_EXPANDED;
     }
 
     @Override
     public boolean onBackPressed() {
-        if (isPractice) {
+        if (isBottomSheetExpanded) {
+            isBottomSheetExpanded = false;
+            mView.collapseBottomSheet();
+            return false;
+        } else if (isPractice) {
             isPractice = false;
             mView.loadActions(mMainAdapter);
             return false;
@@ -165,6 +159,8 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     public void onUserSelected(String patient_id) {
         mUserManager.onUserSelected(patient_id);
         mMainAdapter.setHeader(mView.getContext().getString(R.string.main_actions_header, mUserManager.getCurUserID()));
+        mMainAdapter.setEnabled(0, false);
+        mSheet.fetchPrescription(mUserManager.getCurUserID(), this);
     }
 
     @Override
@@ -189,6 +185,12 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
     }
 
     @Override
+    public void onCoordinatorDone() {
+        mView.hideBottomSheet();
+        isBottomSheetExpanded = false;
+    }
+
+    @Override
     public void onAppSelected(TestApp app) {
         try {
             mView.startPracticeMode(app.getPackageName());
@@ -207,13 +209,24 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
 
         if (list == null) {
             Log.e(getClass().getCanonicalName(), "Null prescription");
+            mView.showToast("No prescription found for " + mUserManager.getCurUserID());
+            isBottomSheetExpanded = false;
+            mView.hideBottomSheet();
             return;
         }
 
+        try {
+            mNumTrials = Integer.parseInt(list.get(2));
+        } catch (NumberFormatException nfe) {
+            mNumTrials = 1;
+        }
+
         mDesiredApps = new ArrayList<>();
+        mAllDifficulties = new int[mAllApps.length];
         for (int i = 0; i < mAllApps.length; i++) {
             try {
                 int difficulty = Integer.parseInt(list.get(i + 4));
+                mAllDifficulties[i] = difficulty;
                 if (difficulty > 0) {
                     mDesiredApps.add(mAllApps[i]);
                 }
@@ -289,6 +302,8 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                     @Override
                     public void run() {
                         mMainAdapter.setEnabled(0, true);
+                        mView.expandBottomSheet();
+                        isBottomSheetExpanded = true;
                     }
                 });
             }

@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
+import edu.umd.cmsc436.mstestsuite.ui.CoordinatorActivity;
 import edu.umd.cmsc436.sheets.Sheets;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, Sheets.Host {
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private Button mPeekButton;
     private BottomSheetBehavior mBottomSheet;
     private ImageView mCloseButton;
+    private View mSpacer;
 
     private MainContract.Presenter mPresenter;
 
@@ -65,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
+        mSpacer = findViewById(R.id.spacer);
+        findViewById(R.id.bottom_sheet).setNestedScrollingEnabled(false);
 
         mInstallCache = null;
 
@@ -95,6 +100,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             }
         });
 
+        findViewById(R.id.expanded_daily_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.onDailyStart();
+            }
+        });
+
         mBottomSheet = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
         mBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -113,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.practice_test_recyclerview);
+        mRecyclerView.setItemAnimator(null);
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
@@ -151,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mBottomSheet.setHideable(false);
                 mBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
@@ -162,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mBottomSheet.setHideable(false);
                 mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mSpacer.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -173,8 +185,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mBottomSheet.setHideable(true);
                 mBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
+                mSpacer.setVisibility(View.GONE);
             }
         });
     }
@@ -304,6 +316,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mPresenter.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_INSTALL) {
             mPresenter.onPackageInstalled();
+        } else if (requestCode == CoordinatorActivity.REQUEST_CODE) {
+            mPresenter.onCoordinatorDone();
         }
     }
 
@@ -337,6 +351,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void installPackage(File f) throws IOException {
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            mInstallCache = f;
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_PERMISSION);
+            return;
+        }
+
         FileChannel inChannel = new FileInputStream(f).getChannel();
         File downloadsFolder = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
 
@@ -348,13 +368,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         outFile.setReadable(true);
         outFile.setWritable(true);
         FileChannel outChannel = new FileOutputStream(outFile).getChannel();
-
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            mInstallCache = f;
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_PERMISSION);
-            return;
-        }
 
 
         try {
