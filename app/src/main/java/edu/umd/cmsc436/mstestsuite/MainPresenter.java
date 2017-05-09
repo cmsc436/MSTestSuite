@@ -45,11 +45,18 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                     mView.showUserSwitcher(mUserManager.getAllUsers().toArray(new String[mUserManager.getAllUsers().size()]));
                 }
             }),
+<<<<<<< HEAD
             new Action("Help", R.drawable.ic_help, null),
             new Action("Feedback", R.drawable.ic_feedback, new Runnable() {
                 @Override
                 public void run() {
                     mView.sendFeedbackToDoc();
+=======
+            new Action("Help", R.drawable.ic_help, new Runnable() {
+                @Override
+                public void run() {
+                    mView.showHelpDialog();
+>>>>>>> upstream/master
                 }
             }),
             new Action("History", R.drawable.ic_history, new Runnable() {
@@ -58,6 +65,10 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
                     mView.showHistoryDialog(mUserManager.getCurUserID());
                 }
             }),
+<<<<<<< HEAD
+=======
+            new Action("Feedback", R.drawable.ic_feedback, null),
+>>>>>>> upstream/master
             new Action("Refresh", R.drawable.ic_refresh_prescription, new Runnable() {
                 @Override
                 public void run() {

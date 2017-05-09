@@ -17,12 +17,15 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+<<<<<<< HEAD
         <activity android:name=".FeedbackActivity">
         </activity>
         <service
             android:name=".model.PharmacistService"
             android:enabled="true"
             android:exported="false"></service>
+=======
+>>>>>>> upstream/master
         <activity
             android:name=".ui.CoordinatorActivity"
             android:theme="@style/AppTheme.Fullscreen">
