@@ -11,7 +11,8 @@ There are four intent actions (in the category `android.intent.category.DEFAULT`
 - `edu.umd.cmsc436.{...}.action.HISTORY`
 
 The possible values in the curly braces are:
-- `tap`
+- `tap.hand`
+- `tap.foot`
 - `spiral`
 - `balance`
 - `level`
@@ -21,7 +22,7 @@ The possible values in the curly braces are:
 - `walk.indoors`
 - `symbol`
 
-For example, the intent to launch the Practice Mode of the Tap app would have the action `edu.umd.cmsc436.tap.action.PRACTICE`.
+For example, the intent to launch the Practice Mode of the Hand Tap app would have the action `edu.umd.cmsc436.tap.hand.action.PRACTICE`.
 
 `.PRACTICE` and `.HELP` don't have any arguments or expect any results.  Practice mode itself is relatively unstructured, and should let the patient practice as long as they want before exiting.  Help mode should display instructions or a guide to using the specific test, and then switch to Practice mode.
 
