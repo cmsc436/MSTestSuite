@@ -52,5 +52,6 @@ interface MainContract {
         void onPackageInstalled ();
         void onCoordinatorDone ();
         void onTrialFinished (String type);
+        void onGoToPracticeMode ();
     }
 }
