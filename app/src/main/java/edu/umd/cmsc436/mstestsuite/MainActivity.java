@@ -275,19 +275,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void showDialog(final String type, final String... user) {
+    public void showHistoryDialog(final String user) {
         final Dialog dialog = new AppCompatDialog(this);
         final String [] app_array = getResources().getStringArray(R.array.display_names);
 
         @SuppressLint("InflateParams")
-        View root = dialog.getLayoutInflater().inflate(R.layout.plain_chooser, null, false);
-        TextView chooser_title = (TextView) root.findViewById(R.id.chooser_title);
-
-        if (type.equals("Help")) {
-            chooser_title.setText("View tutorial for: ");
-        } else if (type.equals("History")) {
-            chooser_title.setText("Show score history for: ");
-        }
+        View root = dialog.getLayoutInflater().inflate(R.layout.history_chooser, null, false);
 
         ListView lv = (ListView) root.findViewById(R.id.app_history_listview);
 
@@ -299,22 +292,43 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 String app_name = "edu.umd.cmsc436." + app_array[position];
                 try {
                     Intent i = new Intent();
-                    if (type.equals("Help")) {
-                        i.setAction(app_name + ".action.HELP");
-                    } else if (type.equals("History")) {
-                        i.setAction(app_name + ".action.HISTORY");
-                        i.putExtra("user", user);
-                    }
+                    i.setAction(app_name + ".action.HISTORY");
+                    i.putExtra("user", user);
                     i.addCategory(Intent.CATEGORY_DEFAULT);
                     startActivity(i);
                 } catch(ActivityNotFoundException e) {
-                    if (type.equals("Help")) {
-                        showToast(app_array[position] + " tutorial" + " not found");
-                    } else if (type.equals("History")) {
-                        showToast(app_array[position] + " history" + " not found");
-                    } else {
-                        showToast("Unknown type");
-                    }
+                    showToast(app_array[position] + " history" + " not found");
+                }
+            }
+        });
+
+        dialog.setContentView(root);
+        dialog.show();
+    }
+
+    @Override
+    public void showHelpDialog() {
+        final Dialog dialog = new AppCompatDialog(this);
+        final String [] app_array = getResources().getStringArray(R.array.display_names);
+
+        @SuppressLint("InflateParams")
+        View root = dialog.getLayoutInflater().inflate(R.layout.help_chooser, null, false);
+
+        ListView lv = (ListView) root.findViewById(R.id.app_help_listview);
+
+        lv.setAdapter(new ArrayAdapter<>(this, R.layout.plain_list_item, R.id.listview_item_textview, app_array));
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dialog.dismiss();
+                String app_name = "edu.umd.cmsc436." + app_array[position];
+                try {
+                    Intent i = new Intent();
+                    i.setAction(app_name + ".action.HELP");
+                    i.addCategory(Intent.CATEGORY_DEFAULT);
+                    startActivity(i);
+                } catch(ActivityNotFoundException e) {
+                    showToast(app_array[position] + " tutorial" + " not found");
                 }
             }
         });

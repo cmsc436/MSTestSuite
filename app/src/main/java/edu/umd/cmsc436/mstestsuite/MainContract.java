@@ -32,7 +32,8 @@ interface MainContract {
         Sheets.Host getHost ();
         Activity getActivity ();
         void installPackage (File f) throws IOException;
-        void showDialog (String type, String... user);
+        void showHistoryDialog (String user);
+        void showHelpDialog ();
     }
 
     // things the presenter responds to

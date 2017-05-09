@@ -48,13 +48,13 @@ class MainPresenter implements MainContract.Presenter, TestApp.Events,
             new Action("Help", R.drawable.ic_help, new Runnable() {
                 @Override
                 public void run() {
-                    mView.showDialog("Help");
+                    mView.showHelpDialog();
                 }
             }),
             new Action("History", R.drawable.ic_history, new Runnable() {
                 @Override
                 public void run() {
-                    mView.showDialog("History", mUserManager.getCurUserID());
+                    mView.showHistoryDialog(mUserManager.getCurUserID());
                 }
             }),
             new Action("Feedback", R.drawable.ic_feedback, null),
