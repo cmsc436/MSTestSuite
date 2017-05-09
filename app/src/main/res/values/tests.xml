@@ -86,6 +86,8 @@
     <string-array name="flex">
         <item>LH_CURL</item>
         <item>RH_CURL</item>
+        <item>LF_CURL</item>
+        <item>RF_CURL</item>
     </string-array>
 
     <string-array name="walk_indoors">
