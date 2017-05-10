@@ -39,6 +39,7 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import edu.umd.cmsc436.frontendhelper.TrialMode;
 import edu.umd.cmsc436.mstestsuite.data.ActionsAdapter;
 import edu.umd.cmsc436.mstestsuite.ui.CoordinatorActivity;
 import edu.umd.cmsc436.sheets.Sheets;
@@ -278,13 +279,18 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
-        startActivity(i);
+        try {
+            startActivity(i);
+        } catch (ActivityNotFoundException anfe) {
+            showToast("No email client found");
+        }
     }
 
     @Override
     public void showHistoryDialog(final String user) {
         final Dialog dialog = new AppCompatDialog(this);
-        final String [] app_array = getResources().getStringArray(R.array.display_names);
+        final String[] app_array = getResources().getStringArray(R.array.display_names);
+        final String[] intent_array = getResources().getStringArray(R.array.test_prefixes);
 
         @SuppressLint("InflateParams")
         View root = dialog.getLayoutInflater().inflate(R.layout.history_chooser, null, false);
@@ -296,15 +302,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
-                String app_name = "edu.umd.cmsc436." + app_array[position];
                 try {
                     Intent i = new Intent();
-                    i.setAction(app_name + ".action.HISTORY");
-                    i.putExtra("user", user);
+                    i.setAction(intent_array[position] + ".action.HISTORY");
+                    i.putExtra(TrialMode.KEY_PATIENT_ID, user);
                     i.addCategory(Intent.CATEGORY_DEFAULT);
                     startActivity(i);
                 } catch(ActivityNotFoundException e) {
-                    showToast(app_array[position] + " history" + " not found");
+                    showToast(app_array[position] + " history not found");
                 }
             }
         });
@@ -316,7 +321,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void showHelpDialog() {
         final Dialog dialog = new AppCompatDialog(this);
-        final String [] app_array = getResources().getStringArray(R.array.display_names);
+        final String[] app_array = getResources().getStringArray(R.array.display_names);
+        final String[] intent_array = getResources().getStringArray(R.array.test_prefixes);
 
         @SuppressLint("InflateParams")
         View root = dialog.getLayoutInflater().inflate(R.layout.help_chooser, null, false);
@@ -328,14 +334,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
-                String app_name = "edu.umd.cmsc436." + app_array[position];
                 try {
                     Intent i = new Intent();
-                    i.setAction(app_name + ".action.HELP");
+                    i.setAction(intent_array[position] + ".action.HELP");
                     i.addCategory(Intent.CATEGORY_DEFAULT);
                     startActivity(i);
                 } catch(ActivityNotFoundException e) {
-                    showToast(app_array[position] + " tutorial" + " not found");
+                    showToast(app_array[position] + " tutorial not found");
                 }
             }
         });
